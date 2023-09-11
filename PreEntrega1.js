@@ -48,7 +48,7 @@ const productManager = new ProductManager();
 console.log("Productos iniciales:", productManager.getProducts()); // "Productos iniciales: []"
 
 productManager.addProduct(
-    "producto prueba",
+    "Producto prueba",
     "Este es un producto prueba",
     200,
     "Sin imagen",
@@ -60,7 +60,7 @@ console.log("Productos después de agregar uno:", productManager.getProducts());
 
 // Agregamos producto
 productManager.addProduct(
-    "producto repetido",
+    "Producto repetido",
     "Este es un producto repetido",
     150,
     "Sin imagen",
