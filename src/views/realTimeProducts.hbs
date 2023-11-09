@@ -1,0 +1,79 @@
+<!-- views/realTimeProducts.handlebars -->
+
+<h1 class='container'>Lista de Productos en Tiempo Real</h1>
+
+<table class='container m-5'>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Precio</th>
+            <th>Código</th>
+            <th>Cantidad en stock</th>
+            <th>Status</th>
+            <th>Thumbnails</th>
+            <th>Categoría</th>
+        </tr>
+    </thead>
+    <tbody class='container text-start p-5 text-danger'>
+        {{#each products}}
+            <tr class='p-5'>
+                <td>{{_doc._id}}</td>
+                <td>{{_doc.title}}</td>
+                <td>{{_doc.description}}</td>
+                <td>${{_doc.price}}</td>
+                <td>{{_doc.code}}</td>
+                <td>{{_doc.stock}}</td>
+                <td>{{_doc.status}}</td>
+                <td>{{_doc.thumbnails}}</td>
+                <td>{{_doc.category}}</td>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+<div class='container m-5'>
+    <h1>Crear nuevo producto</h1>
+    <form action='/api/product' , method='POST'>
+        <div class='form-group'>
+            <label for='nombre'>Nombre</label>
+            <input name='title' type='text' class='form-control' id='title' placeholder='Nombre del producto' />
+        </div>
+        <div class='form-group'>
+            <label for='descripcion'>Descripción</label>
+            <textarea name='description' class='form-control' id='description' placeholder='Descripción'></textarea>
+        </div>
+        <div class='form-group'>
+            <label for='precio'>Precio</label>
+            <input name='price' type='text' class='form-control' id='price' placeholder='1500' />
+        </div>
+        <div class='form-group'>
+            <label for='codigo'>Código</label>
+            <input name='code' type='text' class='form-control' id='code' placeholder='abc1234' />
+        </div>
+        <div class='form-group'>
+            <label for='cantidad'>Cantidad en stock</label>
+            <input name='stock' type='text' class='form-control' id='stock' placeholder='25' />
+        </div>
+        <div class='form-group'>
+            <label for='cantidad'>Imagenes</label>
+            <input name='thumbnails' type='text' class='form-control' id='thumbnails' placeholder='25' />
+        </div>
+        <div class='form-group'>
+            <label for='status'>Status</label>
+            <select name='status' class='form-control' id='status'>
+                <option value='true'>Active</option>
+                <option value='false'>Inactive</option>
+            </select>
+        </div>
+        <div class='form-group'>
+            <label for='categoria'>Categoría</label>
+            <input name='category' type='text' class='form-control' id='category' placeholder='Enter Categoría' />
+        </div>
+        <button type='submit' class='btn btn-primary'>Submit</button>
+    </form>
+</div>
+
+<script src='/socket.io/socket.io.js'></script>
+<script src='/js/index.js'></script>

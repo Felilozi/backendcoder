@@ -1,0 +1,199 @@
+openapi: 3.0.3
+
+info:
+  version: 0.0.1
+  title: Product API
+  description: API for retrieving and adding products to an e-commerce platform
+  termsOfService: TERMS_OF_SERVICE
+  license:
+    name: MIT
+    url: LICENSE
+  contact:
+    name: Felicia Lozinski
+    url: https://github.com/Felilozi
+    email: felicialozinski97@gmail.com
+
+tags:
+  - name: Product
+    description: Endpoints for managing products
+
+servers:
+  - url: http://{HOST}:{PORT}/{BASE_PATH}
+    variables:
+      HOST:
+        default: '127.0.0.1'
+      PORT:
+        default: '3000'
+      BASE_PATH:
+        default: api
+
+paths:
+  /product:
+    get:
+      tags:
+        - Product
+      summary: Get all products
+      responses:
+        '200':
+          description: JSON array with all the products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Return message when no products are found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Return message in case of a server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Product
+      summary: Create new products
+      responses:
+        '201':
+          description: A new product has been created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Return message when no products are found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Return message in case of a server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /product/{pid}:
+    parameters:
+      - name: pid
+        in: path
+        required: true
+        schema:
+          type: integer
+
+    get:
+      tags:
+        - Product
+      summary: Retrieve a specific product by ID
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Return message when no product is found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Return message in case of a server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+        - Product
+      summary: Update a product
+      responses:
+        '200':
+          description: The updated product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Return message when no product is found for updating
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Return message in case of a server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - Product
+      summary: Delete a product
+      responses:
+        '200':
+          description: The deleted product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Return message when no product is found for deletion
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Return message in case of a server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    ProductId:
+      type: string
+      description: Unique identifier of a product
+    Product:
+      type: object
+      description: Products from the database
+      required:
+        - title
+        - description
+        - price
+        - thumbnails
+        - code
+        - stock
+        - status
+        - category
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        thumbnails:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+        stock:
+          type: integer
+        status:
+          type: boolean
+        category:
+          type: string
+    Error:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: Error message for each process

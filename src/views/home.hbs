@@ -1,0 +1,32 @@
+<!-- views/home.handlebars -->
+
+<h1 class='container dflex justify-content-center text-center'> Listado de Productos</h1>
+
+<table class='container dflex justify-content-center'>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Precio</th>
+            <th>Código</th>
+            <th>Cantidad en stock</th>
+            <th>Status</th>
+            <th>Categoría</th>
+        </tr>
+    </thead>
+    <tbody class='container text-start p-5 text-danger'>
+        {{#each prodsRender}}
+            <tr class='p-5'>
+                <td>{{id}}</td>
+                <td>{{title}}</td>
+                <td>{{description}}</td>
+                <td>${{price}}</td>
+                <td>{{code}}</td>
+                <td>{{stock}}</td>
+                <td>{{status}}</td>
+                <td>{{category}}</td>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>
