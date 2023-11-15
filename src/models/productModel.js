@@ -4,10 +4,7 @@ import mongoose from 'mongoose'
 
 const { Schema, model } = mongoose
 const ProductSchema = new Schema({
-    id: {
-        type: Number,
-        required: false,
-    },
+
     title: {
         type: String,
         required: true,
@@ -43,5 +40,6 @@ const ProductSchema = new Schema({
     createdAt: { type: Date, default: Date.now },
     UpdatedAt: { type: Date, default: Date.now },
 })
+ProductSchema.index({ price: 1 , price: -1});
 
 export const Product = model('products', ProductSchema)

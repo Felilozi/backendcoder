@@ -1,0 +1,128 @@
+[
+    {
+        "title": "Remera1",
+        "description": "Remera mangas cortas motivo de navidad ",
+        "price": 1500,
+        "thumbnails": [
+            "image1.jpg",
+            "image2.jpg"
+        ],
+        "code": "1452a8",
+        "stock": 25,
+        "status": true,
+        "category": "Remeras",
+        "createdAt": "2023-11-08T23:51:26.434+00:00",
+        "updatedAt": "2023-11-08T23:51:26.434+00:00",
+        "__v": 0
+    },
+    {
+        "title": "Pantalón",
+        "description": "Pantalón de mezclilla",
+        "price": 2000,
+        "thumbnails": [
+            "image3.jpg",
+            "image4.jpg"
+        ],
+        "code": "2318b7",
+        "stock": 20,
+        "status": true,
+        "category": "Pantalones",
+        "createdAt": "2023-11-09T10:15:00.000+00:00",
+        "updatedAt": "2023-11-09T10:15:00.000+00:00",
+        "__v": 0
+    },
+    {
+        "title": "Remera2",
+        "description": "Remera mangas cortas 2",
+        "price": 1500,
+        "thumbnails": [
+            "image1.jpg",
+            "image2.jpg"
+        ],
+        "code": "1452a6",
+        "stock": 25,
+        "status": true,
+        "category": "Remeras",
+        "createdAt": "2023-11-08T23:51:26.434+00:00",
+        "updatedAt": "2023-11-08T23:51:26.434+00:00",
+        "__v": 0
+    },
+    {
+        "title": "Pantalón2",
+        "description": "Pantalón de mezclilla 2",
+        "price": 2000,
+        "thumbnails": [
+            "image3.jpg",
+            "image4.jpg"
+        ],
+        "code": "2318b5",
+        "stock": 20,
+        "status": true,
+        "category": "Pantalones",
+        "createdAt": "2023-11-09T10:15:00.000+00:00",
+        "updatedAt": "2023-11-09T10:15:00.000+00:00",
+        "__v": 0
+    },    {
+        "title": "Remera3",
+        "description": "Remera mangas cortas3",
+        "price": 1500,
+        "thumbnails": [
+            "image1.jpg",
+            "image2.jpg"
+        ],
+        "code": "1452a4",
+        "stock": 25,
+        "status": true,
+        "category": "Remeras",
+        "createdAt": "2023-11-08T23:51:26.434+00:00",
+        "updatedAt": "2023-11-08T23:51:26.434+00:00",
+        "__v": 0
+    },
+    {
+        "title": "Pantalón4",
+        "description": "Pantalón de mezclilla4",
+        "price": 2000,
+        "thumbnails": [
+            "image3.jpg",
+            "image4.jpg"
+        ],
+        "code": "2318b3",
+        "stock": 20,
+        "status": true,
+        "category": "Pantalones",
+        "createdAt": "2023-11-09T10:15:00.000+00:00",
+        "updatedAt": "2023-11-09T10:15:00.000+00:00",
+        "__v": 0
+    },    {
+        "title": "Remera5",
+        "description": "Remera mangas cortas5",
+        "price": 1500,
+        "thumbnails": [
+            "image1.jpg",
+            "image2.jpg"
+        ],
+        "code": "1452a2",
+        "stock": 25,
+        "status": true,
+        "category": "Remeras",
+        "createdAt": "2023-11-08T23:51:26.434+00:00",
+        "updatedAt": "2023-11-08T23:51:26.434+00:00",
+        "__v": 0
+    },
+    {
+        "title": "Pantalón6",
+        "description": "Pantalón de mezclilla6",
+        "price": 2000,
+        "thumbnails": [
+            "image3.jpg",
+            "image4.jpg"
+        ],
+        "code": "2318b1",
+        "stock": 20,
+        "status": true,
+        "category": "Pantalones",
+        "createdAt": "2023-11-09T10:15:00.000+00:00",
+        "updatedAt": "2023-11-09T10:15:00.000+00:00",
+        "__v": 0
+    }
+]

@@ -4,7 +4,14 @@ import { Product } from '../models/productModel.js'
 
 export const getProducts = async (req, res) => {
     try {
-        const products = await Product.find({})
+        const limit = parseInt(req.query.limit, 10) || 10;
+        const sortField = req.query.sort || 'createdAt';
+        const sortOrder = req.query.order === 'desc' ? -1 : 1;
+        const products = await Product.find({}).sort({ [sortField]: sortOrder }).limit(limit).exec();
+
+        res.json(products);
+        console.log(products)
+
 
         if (!products) {
             return res.status(404).send({
@@ -13,15 +20,15 @@ export const getProducts = async (req, res) => {
             })
         }
 
-        const limit = parseInt(req.query.limit, 10)
-        if (!isNaN(limit)) {
-            products.slice(0, limit)
-            return res.render('realTimeProducts', { products })
+        // const limit = parseInt(req.query.limit, 10)
+        // if (!isNaN(limit)) {
+        //     products.slice(0, limit)
+        //     return res.render('realTimeProducts', { products })
 
-            // res.json(JSON.parse(products.slice(0, limit)))
-        } else {
-            return res.render('realTimeProducts', { products })
-        }
+        //     // res.json(JSON.parse(products.slice(0, limit)))
+        // } else {
+        //     return res.render('realTimeProducts', { products })
+        // }
     } catch (err) {
         console.log(err)
         res.status(500).send({
@@ -60,6 +67,7 @@ export const saveProduct = async (req, res) => {
 export const getProductByID = async (req, res) => {
     try {
         const query = Product.where({ _id: req.params.pid })
+        console.log(req.params)
         const products = await query.findOne()
 
         if (!products) {

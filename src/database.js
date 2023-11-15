@@ -1,4 +1,6 @@
 'use strict'
+//conexion a mongo 
+
 
 import mongoose from 'mongoose'
 import { config } from './config.js'
@@ -35,3 +37,4 @@ db.once('open', () => {
 })
 
 export { db }
+//SE ENCUENTRA TODO EN LA PAGINA OFICIA 8.0
