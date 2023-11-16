@@ -1,0 +1,24 @@
+hola
+{{#each products}}
+<tr class='p-5'>
+
+    <td>{{_doc.title}}</td>
+    <td>{{_doc.description}}</td>
+    <td>${{_doc.price}}</td>
+    <td>{{_doc.code}}</td>
+    <td>{{_doc.stock}}</td>
+    <td>{{_doc.status}}</td>
+    <td>{{_doc.thumbnails}}</td>
+    <td>{{_doc.category}}</td>
+</tr>
+{{!-- <button action='/api/product/{{_doc._id}}' , method='GETF' onclick="addToCart('{{_id}}')">Ver detalle del producto</button> --}}
+{{!-- <a href="/product/:pid={{_doc._id}}">Ver detalles</a> --}}
+<a href="/api/product/{{_doc._id}}">Ver detalles</a>
+
+{{/each}}
+{{#if response.pagination.hasPrevPage }}
+<a href="{{response.pagination.prevLink}}">Anterior  pagina</a>
+{{/if}}
+{{#if response.pagination.hasNextPage}}
+<a href="{{response.pagination.nextLink}}">Siguiente pagina</a>
+{{/if}}

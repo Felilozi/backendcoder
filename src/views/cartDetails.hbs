@@ -1,0 +1,32 @@
+<div class=" d-flex flex-column mb-3">
+<h1>Carrito</h1>
+<table class='container m-5'>
+    <thead>
+        <tr>
+            
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Cantidad</th>
+            <th>Precio</th>
+            
+        </tr>
+    </thead>
+<tbody class='container text-start p-5 text-danger'>
+
+{{#each products}}
+
+<tr class='p-5'>
+
+    {{!-- <td>{{{_doc.producto}}}</td> --}}
+    <td>{{title}}</td>
+    <td>{{description}}</td>
+    <td>{{quantity}}</td>
+    <td>${{price}}</td>
+    
+    
+    
+</tr>
+{{/each}}
+</tbody>
+</table>
+</div>

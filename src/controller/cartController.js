@@ -62,19 +62,28 @@ export const getCartbyId = async (req, res) => {
     try {
         const query = Cart.where({ _id: req.params.cid })
         const carts = await query.findOne().populate('products.producto');
-
+    
         if (!carts) {
             return res.status(404).send({
                 status: 404,
                 message: 'No cart found',
             })
         }
+        const productData = carts.products.map(product => ({
+            title: product.producto.title,
+            description: product.producto.description,
+            quantity: product.quantity,
+            price:product.producto.price * product.quantity,
+            
+        }));
+        res.render('cartDetails', { products: productData });
+        // res.render('cartDetails', {products:carts.products} );
 
-        return res.status(200).send({
-            status: 200,
-            message: 'Ok',
-            data: carts,
-        })
+        // res.status(200).send({
+        //     status: 200,
+        //     message: 'Ok',
+        //     data: carts,
+        // })
     } catch (err) {
         console.log(err)
         res.status(500).send({
@@ -143,19 +152,19 @@ export const deleteProductFromCart = async (req, res) => {
 export const addProductToCart = async (req, res) => {
 
     const { cid, pid } = req.params;
-    const{quantity }= req.body || 1;
+    const{quantity }= req.body ;
 
     try {
         const cart = await Cart.findOneAndUpdate(
             { _id: cid, 'products.producto': pid },
-            { $inc: { 'products.$.quantity':quantity } },
+            { $inc: { 'products.$.quantity':quantity || 1 } },
             { new: true } // Return the modified document
         ).populate('products.producto');
 
         if (!cart) {
             const newCart = {
                 producto: pid,
-                quantity
+                quantity:quantity || 1
             };
             const savedCart = await Cart.findOneAndUpdate({ 
                 _id: cid },

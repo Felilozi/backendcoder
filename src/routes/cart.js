@@ -13,7 +13,7 @@ router.get('/:cid', getCartbyId)
 
 router.delete('/:cid', deleteCart)
 // Create a new product or add products to Cart
-router.put('/:cid/products/:pid', addProductToCart)
+router.post('/:cid/products/:pid', addProductToCart)
 
 
 // DELETE /api/carts/:cid/products/:pid

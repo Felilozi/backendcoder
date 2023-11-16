@@ -3,7 +3,7 @@
 import { Product } from '../models/productModel.js'
 
 export const getProducts = async (req, res) => {
-    const limit = parseInt(req.query.limit, 10) || 10;
+    const limit = parseInt(req.query.limit, 10) || 2;
     // const page = parseInt(req.query.page) || 1;
     const { category, minStock, status } = req.query;
 
@@ -40,13 +40,17 @@ export const getProducts = async (req, res) => {
                 page: result.page,
                 hasPrevPage: result.hasPrevPage,
                 hasNextPage: result.hasNextPage,
-                prevLink: result.hasPrevPage ? `/api/products?page=${result.page - 1}` : null,
-                nextLink: result.hasNextPage ? `/api/products?page=${result.page + 1}` : null,
+                prevLink: result.hasPrevPage ? `/api/product?page=${result.page - 1}` : null,
+                nextLink: result.hasNextPage ? `/api/product?page=${result.page + 1}` : null,
             }
         };
 
-        res.status(200).json(response);
-        console.log(response ,"hola");
+        // res.render('allproductos', { products: result.docs })
+        res.render('allproductos', {response ,
+                                    products: result.docs});
+        // console.log(result.docs);
+        // res.status(200).json(response);
+        console.log(response.payload ,"hola");
 
         // if (result.docs.length === 0){
         //     return res.status(404).send({
@@ -103,11 +107,8 @@ export const getProductByID = async (req, res) => {
             })
         }
 
-        return res.status(200).send({
-            status: 200,
-            message: 'Ok',
-            data: products,
-        })
+        res.render('productosDetalles',  products)
+        
     } catch (err) {
         console.log(err)
         res.status(500).send({
