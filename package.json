@@ -9,7 +9,6 @@
         "start": "node src/index.js",
         "dev": "nodemon src/index.js",
         "format": "prettier --write ."
-
     },
     "keywords": [],
     "author": "Felicia <felicialozinski97@gmail.com> (https://github.com/Felilozi)",
@@ -33,6 +32,7 @@
         "express-handlebars": "7.1.2",
         "handlebars": "4.7.8",
         "mongoose": "8.0.0",
+        "mongoose-paginate-v2": "1.7.4",
         "socket.io": "4.7.2",
         "swagger-ui-express": "5.0.0",
         "yamljs": "0.3.0"

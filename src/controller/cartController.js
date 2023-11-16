@@ -4,7 +4,7 @@ import { Cart } from '../models/cartModel.js'
 
 export const getCarts = async (req, res) => {
     try {
-        const carts = await Cart.find({}).select(['-__v'])
+        const carts = await Cart.find({}).select(['-__v']).populate('products.producto');
 
         if (!carts) {
             return res.status(404).send({
@@ -61,7 +61,7 @@ export const createCart = async (req, res) => {
 export const getCartbyId = async (req, res) => {
     try {
         const query = Cart.where({ _id: req.params.cid })
-        const carts = await query.findOne()
+        const carts = await query.findOne().populate('products.producto');
 
         if (!carts) {
             return res.status(404).send({
@@ -87,7 +87,7 @@ export const getCartbyId = async (req, res) => {
 export const deleteCart = async (req, res) => {
     try {
         // const query = Product.where({ id: req.params.pid });
-        const carts = await Cart.deleteOne({ _id: req.params.cid })
+        const carts = await Cart.deleteOne({ _id: req.params.cid }).populate('products.producto');
 
         if (!carts) {
             return res.status(404).send({
@@ -109,77 +109,67 @@ export const deleteCart = async (req, res) => {
         })
     }
 }
+export const deleteProductFromCart = async (req, res) => {
+    try {
+
+
+        const cartId = req.params.cid;
+        const productId = req.params.pid;
+
+        // Buscar el carrito por su ID y actualizarlo
+        const updatedCart = await Cart.findByIdAndUpdate(
+            cartId,
+            { $pull: { products: { producto: productId } } },
+            { new: true }
+        ).populate('products.producto');
+
+        if (updatedCart) {
+            console.log('Product deleted from cart', updatedCart);
+            res.status(200).json({ message: 'Product deleted from cart', cart: updatedCart });
+        }
+
+        else {
+            // Cart with the given ID not found
+            console.log('Cart not found');
+            res.status(404).json({ message: 'Cart not found' });
+        }
+    } catch (error) {
+        // Handle error
+        console.error('Error deleting product from cart:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
 
 export const addProductToCart = async (req, res) => {
-    // try {
-    //     // const query = Product.where({ id: req.params.pid });
-    //     const { cid , pid } = req.params;
-    //     const query = Cart.where({ _id: cid, 'products.producto': pid })
-    //     const carts = await Cart.findOne({ _id: cid, 'products.producto': pid }).populate('products.producto')
-    //     console.log(carts)
-    //     let ProductByIdIndex = carts.products.findIndex(product => product.producto === req.params.pid)
 
-    //     // Update the specified product quantity
-    //     if (ProductByIdIndex !== -1) {
-    //         carts.products[ProductByIdIndex].quantity += 1
-    //     } else {
-    //         // If the product doesn´t exists, create it
-    //         const product = {
-    //             producto: {_id : req.params.pid},
-    //             quantity: 1,
-    //         }
-    //         carts.products.push(product)
-    //     }
-
-    //     const filter = { _id: req.params.cid }
-
-    //     const update = {
-    //         products: carts.products,
-    //     }
-
-    //     // `doc` is the document _after_ `update` was applied because of
-    //     // `returnOriginal: false`
-    //     const cartUpdated = await Cart.findOneAndUpdate(filter, update, {
-    //         returnOriginal: false,
-    //     })
-
-    //     if (!carts) {
-    //         return res.status(404).send({
-    //             status: 404,
-    //             message: 'No cart updated',
-    //         })
-    //     }
-
-    //     return res.status(200).send({
-    //         status: 200,
-    //         message: 'Ok',
-    //         data: `Cart ID: ${req.params.cid} updated with info: ${cartUpdated}`,
-    //     })
     const { cid, pid } = req.params;
+    const{quantity }= req.body || 1;
 
-try {
-  const cart = await Cart.findOneAndUpdate(
-    { _id: cid, 'products.producto': pid },
-    { $inc: { 'products.$.quantity': 1 } },
-    { new: true } // Return the modified document
-  ).populate('products.producto');
+    try {
+        const cart = await Cart.findOneAndUpdate(
+            { _id: cid, 'products.producto': pid },
+            { $inc: { 'products.$.quantity':quantity } },
+            { new: true } // Return the modified document
+        ).populate('products.producto');
 
-  if (!cart) {
-    // If the cart is not found or the product is not in the cart, you might want to create a new entry
-    // Alternatively, you can handle it based on your specific use case.
-    // For this example, let's create a new entry if not found.
-    const newCart = new Cart({
-      _id: cid,
-      products: [{ producto: pid, quantity: 1 }],
-    });
-    const savedCart = await newCart.save();
-    return res.json(savedCart);
-  }
+        if (!cart) {
+            const newCart = {
+                producto: pid,
+                quantity
+            };
+            const savedCart = await Cart.findOneAndUpdate({ 
+                _id: cid },
+            { $push: { products: newCart } },
+            { new: true } // Return the modified document
+        ).populate('products.producto');
 
-  // At this point, 'cart' contains the cart with the updated quantity
-  res.json(cart);
-
-    } catch (err) {
+            return res.json(savedCart);
+        }else {
+            res.json(cart);
+        }
+        
+        // At this point, 'cart' contains the cart with the updated quantity
+        } catch (err) {
         console.log(err)
         res.status(500).send({
             status: 500,
@@ -187,3 +177,44 @@ try {
         })
     }
 }
+export const  updateProduct = async (req, res) => {
+    try { 
+        // 1. Validar la entrada
+        const { products } = req.body;
+
+        if (!Array.isArray(products)) {
+            return res.status(400).json({
+                status: 'error',
+                message: 'La propiedad "products" debe ser un arreglo.',
+            });
+        }
+
+        // 2. Buscar el carrito por ID
+        const cartId = req.params.cid;
+        const existingCart = await Cart.findById(cartId);
+
+        if (!existingCart) {
+            return res.status(404).json({
+                status: 'error',
+                message: 'Carrito no encontrado.',
+            });
+        }
+
+        // 3. Actualizar el carrito
+        existingCart.products = products;
+        const updatedCart = await existingCart.save();
+
+        // 4. Responder con la respuesta actualizada
+        res.status(200).json({
+            status: 'success',
+            message: 'Carrito actualizado con éxito.',
+            data: updatedCart,
+        });
+    } catch (error) {
+        console.error('Error actualizando el carrito:', error);
+        res.status(500).json({
+            status: 'error',
+            message: 'Error interno del servidor.',
+        });
+    }
+};

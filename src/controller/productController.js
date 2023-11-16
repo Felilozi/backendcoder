@@ -3,32 +3,58 @@
 import { Product } from '../models/productModel.js'
 
 export const getProducts = async (req, res) => {
+    const limit = parseInt(req.query.limit, 10) || 10;
+    // const page = parseInt(req.query.page) || 1;
+    const { category, minStock, status } = req.query;
+
+    const filter = {};
+    if (category) {
+        filter.category = category;
+    }
+    if (minStock) {
+        filter.stock = { $gt: parseInt(minStock) || 1 };
+    }
+    if (status) {
+        filter.status = status;
+    }
     try {
-        const limit = parseInt(req.query.limit, 10) || 10;
         const sortField = req.query.sort || 'createdAt';
         const sortOrder = req.query.order === 'desc' ? -1 : 1;
-        const products = await Product.find({}).sort({ [sortField]: sortOrder }).limit(limit).exec();
 
-        res.json(products);
-        console.log(products)
+        // const products = await Product.find(filter).sort({ [sortField]: sortOrder }).limit(limit).exec();
+        const options = {
+            sort: { [sortField]: sortOrder },
+            page: req.query.page || 1,
+            limit: limit
+        };
+        const result = await Product.paginate(filter, options);
 
 
-        if (!products) {
-            return res.status(404).send({
-                status: 404,
-                message: 'No products found',
-            })
-        }
+        const response = {
+            status: 'success',
+            payload: result.docs,
+            pagination: {
+                totalPages: result.totalPages,
+                prevPage: result.hasPrevPage ? result.page - 1 : null,
+                nextPage: result.hasNextPage ? result.page + 1 : null,
+                page: result.page,
+                hasPrevPage: result.hasPrevPage,
+                hasNextPage: result.hasNextPage,
+                prevLink: result.hasPrevPage ? `/api/products?page=${result.page - 1}` : null,
+                nextLink: result.hasNextPage ? `/api/products?page=${result.page + 1}` : null,
+            }
+        };
 
-        // const limit = parseInt(req.query.limit, 10)
-        // if (!isNaN(limit)) {
-        //     products.slice(0, limit)
-        //     return res.render('realTimeProducts', { products })
+        res.status(200).json(response);
+        console.log(response ,"hola");
 
-        //     // res.json(JSON.parse(products.slice(0, limit)))
-        // } else {
-        //     return res.render('realTimeProducts', { products })
-        // }
+        // if (result.docs.length === 0){
+        //     return res.status(404).send({
+        //         status: 404,
+        //         message: 'No products found',
+        //     })
+
+
     } catch (err) {
         console.log(err)
         res.status(500).send({

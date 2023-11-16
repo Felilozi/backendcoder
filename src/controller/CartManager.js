@@ -65,7 +65,6 @@ export class CartManager {
             throw error // Optionally, you can re-throw the error for further handling
         }
     }
-
     async addProductToCart(id, productId) {
         try {
             const fileContent = await fs.readFile(this.path, 'utf-8')
