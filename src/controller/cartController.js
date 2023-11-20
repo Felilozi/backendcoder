@@ -62,7 +62,7 @@ export const getCartbyId = async (req, res) => {
     try {
         const query = Cart.where({ _id: req.params.cid })
         const carts = await query.findOne().populate('products.producto');
-    
+
         if (!carts) {
             return res.status(404).send({
                 status: 404,
@@ -73,8 +73,8 @@ export const getCartbyId = async (req, res) => {
             title: product.producto.title,
             description: product.producto.description,
             quantity: product.quantity,
-            price:product.producto.price * product.quantity,
-            
+            price: product.producto.price * product.quantity,
+
         }));
         res.render('cartDetails', { products: productData });
         // res.render('cartDetails', {products:carts.products} );
@@ -152,33 +152,51 @@ export const deleteProductFromCart = async (req, res) => {
 export const addProductToCart = async (req, res) => {
 
     const { cid, pid } = req.params;
-    const{quantity }= req.body ;
+    const { quantity } = req.body;
 
     try {
         const cart = await Cart.findOneAndUpdate(
             { _id: cid, 'products.producto': pid },
-            { $inc: { 'products.$.quantity':quantity || 1 } },
+            { $inc: { 'products.$.quantity': quantity || 1 } },
             { new: true } // Return the modified document
         ).populate('products.producto');
 
         if (!cart) {
             const newCart = {
                 producto: pid,
-                quantity:quantity || 1
+                quantity: quantity || 1
             };
-            const savedCart = await Cart.findOneAndUpdate({ 
-                _id: cid },
-            { $push: { products: newCart } },
-            { new: true } // Return the modified document
-        ).populate('products.producto');
+            const savedCart = await Cart.findOneAndUpdate({
+                _id: cid
+            },
+                { $push: { products: newCart } },
+                { new: true } // Return the modified document
+            ).populate('products.producto');
 
-            return res.json(savedCart);
-        }else {
-            res.json(cart);
+            // return res.json(savedCart);
+            const productData = savedCart.products.map(product => ({
+                title: product.producto.title,
+                description: product.producto.description,
+                quantity: product.quantity,
+                price: product.producto.price * product.quantity,
+
+            }));
+            res.render('cartDetails', { products: productData });
+
+        } else {
+            // res.json(cart);
+            const productData = cart.products.map(product => ({
+                title: product.producto.title,
+                description: product.producto.description,
+                quantity: product.quantity,
+                price: product.producto.price * product.quantity,
+
+            }));
+            res.render('cartDetails', { products: productData });
         }
-        
+
         // At this point, 'cart' contains the cart with the updated quantity
-        } catch (err) {
+    } catch (err) {
         console.log(err)
         res.status(500).send({
             status: 500,
@@ -186,8 +204,8 @@ export const addProductToCart = async (req, res) => {
         })
     }
 }
-export const  updateProduct = async (req, res) => {
-    try { 
+export const updateProduct = async (req, res) => {
+    try {
         // 1. Validar la entrada
         const { products } = req.body;
 
