@@ -1,4 +1,19 @@
-hola
+
+<div>
+    <h1>Bienvenido</h1>
+    {{#if admin }}
+    <h2>Usted es Administrador del sistema!</h2>
+    {{/if}}
+    <p>{{user._doc.first_name}}</p>
+    <p>{{user._doc.last_name}}</p>
+    <p>{{user._doc.email}}</p>
+    <p>{{user._doc.age}}</p>
+</div>
+
+<form id="logoutButton">
+    <input type="submit" name="logout" aria-label="Cerrar sesión">
+</form>
+
 {{#each products}}
 <tr class='p-5'>
 
@@ -22,3 +37,5 @@ hola
 {{#if response.pagination.hasNextPage}}
 <a href="{{response.pagination.nextLink}}">Siguiente pagina</a>
 {{/if}}
+
+<script src="/public/js/logout.js"></script>

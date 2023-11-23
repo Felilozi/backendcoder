@@ -1,6 +1,7 @@
 'use strict'
 
 import { Product } from '../models/productModel.js'
+import { Users } from "../models/usersmodel.js";
 
 export const getProducts = async (req, res) => {
     const limit = parseInt(req.query.limit, 10) || 2;
@@ -44,19 +45,31 @@ export const getProducts = async (req, res) => {
                 nextLink: result.hasNextPage ? `/api/product?page=${result.page + 1}` : null,
             }
         };
+        const { first_name, last_name, email, age } = req.session.user
 
-        // res.render('allproductos', { products: result.docs })
-        res.render('allproductos', {response ,
-                                    products: result.docs});
-        // console.log(result.docs);
-        // res.status(200).json(response);
-        console.log(response.payload ,"hola");
+        const query = Users.where({
+            first_name,
+            last_name,
+            email,
+            age
+        })
 
-        // if (result.docs.length === 0){
-        //     return res.status(404).send({
-        //         status: 404,
-        //         message: 'No products found',
-        //     })
+        const userData = await query.findOne();
+
+        console.log(userData)
+        let admin;
+        if (userData._doc.role === 'ADMIN') {
+            admin = true
+        } else {
+            admin = false
+        }
+        res.render('allproductos', {
+            response,
+            products: result.docs,
+            user: userData,
+            admin
+        });
+
 
 
     } catch (err) {
@@ -107,8 +120,8 @@ export const getProductByID = async (req, res) => {
             })
         }
 
-        res.render('productosDetalles',  products)
-        
+        res.render('productosDetalles', products)
+
     } catch (err) {
         console.log(err)
         res.status(500).send({
