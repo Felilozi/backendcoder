@@ -16,13 +16,20 @@ form.addEventListener('submit', e => {
     })
         .then(result => {
             if (result.ok) {
+                console.log("registro exitoso")
+                alert("se creo el usuario ")
                 return result.json();
             } else {
-                throw new Error('Registration failed');
+                alert('el usuario ya existe')
+                console.log("no funciona")
+                throw new Error('Registration failed')
+                
+
             }
         })
         .then(json => {
             // Redirect to '/api/product' upon successful registration
+            console.log("redireccion ")
             window.location.href = '/api/views/login';
         })
         .catch(error => {

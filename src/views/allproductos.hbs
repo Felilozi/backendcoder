@@ -2,7 +2,7 @@
 <div>
     <h1>Bienvenido</h1>
     {{#if admin }}
-    <h2>Usted es Administrador del sistema!</h2>
+    <h2>Usted es el Administrador !</h2>
     {{/if}}
     <p>{{user._doc.first_name}}</p>
     <p>{{user._doc.last_name}}</p>
@@ -11,7 +11,7 @@
 </div>
 
 <form id="logoutButton">
-    <input type="submit" name="logout" aria-label="Cerrar sesión">
+    <button type="submit" name="logout" aria-label="Cerrar sesión">Cerrar sesión</button>
 </form>
 
 {{#each products}}
@@ -38,4 +38,4 @@
 <a href="{{response.pagination.nextLink}}">Siguiente pagina</a>
 {{/if}}
 
-<script src="/public/js/logout.js"></script>
+<script src="/js/logout.js"></script>

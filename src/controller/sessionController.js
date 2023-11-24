@@ -7,7 +7,6 @@ import { config } from '../config.js'
 export const registerUser = async (req, res) => {
 
     const { first_name, last_name, email, age, password } = req.body
-    // console.log('Si pase por aqui')
     const existe = await Users.findOne({ email })
 
     let role;
@@ -29,12 +28,11 @@ export const registerUser = async (req, res) => {
     let result = await Users.create(user)
 
     res.send({ status: 'success', message: 'usuario registrado' })
-    // res.redirect('api/session/login')
+
 }
 
 export const loginUser = async (req, res) => {
     const { email, password } = req.body
-    // console.log('Si pase por aqui /////')
     const user = await Users.findOne({ email, password })
 
     if (!user) return res.status(400).send({ status: 'error', error: 'Error Credentials' })
@@ -56,7 +54,6 @@ export const logoutUser = async (req, res) => {
             console.error('Error destroying session:', err);
             res.status(500).send('Error clearing session');
         } else {
-            // Session cleared successfully
             res.status(200).send({ status: 'success', message: 'Deslogeo exitoso' })
         }
 
