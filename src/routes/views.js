@@ -19,4 +19,9 @@ router.get('/', (req, res) => {
     })
 })
 
+router.get('/restorePassword', (req, res) => {
+    console.log('pase1')
+    res.render('restorePassword')
+})
+
 export { router };

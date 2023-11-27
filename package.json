@@ -26,7 +26,8 @@
         "node": ">=18",
         "npm": ">=9"
     },
-    "dependencies": {
+    "dependencies": { "bcrypt": "5.1.1",
+       
         "connect-mongo": "5.1.0",
         "cookie-parser": "1.4.6",
         "cors": "2.8.5",

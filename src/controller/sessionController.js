@@ -1,7 +1,23 @@
 'use strict'
 
 import { Users } from "../models/usersmodel.js";
-import { config } from '../config.js'
+import { config } from '../config.js';
+import { createHash ,isValidPassword } from '../utils/helpers.js';
+
+export const restorePassword = async (req, res) =>{
+    const { email, password } = req.body
+    const existe = await Users.findOne({ email })
+    if (!existe) return res.status(404).send({ status: 'error', error: 'El usuario no existe' })
+    
+    const hashedPassword = createHash(password)
+    const user = await Users.findOneAndUpdate(
+            { email: email },
+            { $set: { 'password': hashedPassword } },
+            { new: true } // Return the modified document
+        )
+
+        res.send({status:"success",message:"Contraseña restaurada"});
+}
 
 
 export const registerUser = async (req, res) => {
@@ -33,10 +49,13 @@ export const registerUser = async (req, res) => {
 
 export const loginUser = async (req, res) => {
     const { email, password } = req.body
-    const user = await Users.findOne({ email, password })
+
+    const hashedPassword = createHash(password)
+    const user = await Users.findOne({ email })
 
     if (!user) return res.status(400).send({ status: 'error', error: 'Error Credentials' })
 
+    if(!isValidPassword(user,password)) if(!user) return res.status(403).send({status:"error",error:"Incorrect password"});
     req.session.user = {
         first_name: user.first_name,
         last_name: user.last_name,
