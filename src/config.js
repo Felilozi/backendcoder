@@ -11,6 +11,9 @@ const config = {
     MONGODB_URI: process.env.MONGODB_URI || 'mongodb://localhost/test',
     ADMINEMAIL: process.env.ADMINEMAIL,
     ADMINPASS: process.env.ADMINPASS,
+    PRIVATE_KEY: process.env.PRIVATE_KEY,
+    GITHUB_AUTH_ID: process.env.GITHUB_AUTH_ID,
+    GITHUB_SECRET: process.env.GITHUB_SECRET,
 }
 
 

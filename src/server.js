@@ -1,20 +1,21 @@
 'use strict'
 
 import express, { json } from 'express'
-// import { createServer } from 'node:http'
+import session from 'express-session'
 import { join } from 'node:path'
-// import { Server } from 'socket.io';
 import { engine } from 'express-handlebars'
 import { router } from './routes/index.js'
 import { db } from './database.js'
+import cookieParser from 'cookie-parser'
 import swaggerUi from 'swagger-ui-express'
 import YAML from 'yamljs'
 import cors from 'cors'
-import cookieParser from 'cookie-parser'
-import session from 'express-session'
 import MongoStorage from "connect-mongo"
 import { config } from './config.js'
+import passport from 'passport'
+import initializedPassport from './controller/passportController.js';
 const server = express()
+
 //mill 
 const swaggerDocument = YAML.load('./openapi.yml')
 server.use(json())
@@ -63,5 +64,8 @@ function shutdown(message, code) {
 
 process.on('exit', code => shutdown('About to exit with', code))
 
+initializedPassport()
+server.use(passport.initialize())
+server.use(passport.session())
 
 export default server
