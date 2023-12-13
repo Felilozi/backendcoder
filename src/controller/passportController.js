@@ -1,6 +1,8 @@
 'use strict'
 
 import passport from 'passport';
+import passportJwt from 'passport-jwt';
+import { cookieExtractor } from '../utils/helpers.js';
 import github from 'passport-github2';
 import local from 'passport-local';
 import { config } from '../config.js';
@@ -9,8 +11,36 @@ import { createHash, isValidPassword } from '../utils/helpers.js';
 
 const LocalStrategy = local.Strategy;
 const GitHubStrategy = github.Strategy;
+const JwtStrategy = passportJwt.Strategy;
+const ExtractJwt = passportJwt.ExtractJwt;
 
 const initializedPassport = () => {
+
+    passport.use('current', new JwtStrategy(
+        
+        {
+            jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
+            secretOrKey: config.PRIVATE_KEY,
+        },
+        async (jwt_payload, done) => {
+            try {
+                console.log("Hola aca llego a current")
+                const user = await Users.findOne({ email: jwt_payload.email });
+                if (!user) {
+                    return done(null, false, { messsages: 'User not found' });
+                }
+
+                return done(null, jwt_payload);
+            }
+            catch (error) {
+                return done(error);
+            }
+        }
+    ))
+
+
+
+
 
     passport.use('github', new GitHubStrategy({
         clientID: config.GITHUB_AUTH_ID,

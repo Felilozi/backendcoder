@@ -5,6 +5,7 @@ import session from 'express-session'
 import { join } from 'node:path'
 import { engine } from 'express-handlebars'
 import { router } from './routes/index.js'
+import { routerPrueba } from './routerPrueba/routerPrueba.js'
 import { db } from './database.js'
 import cookieParser from 'cookie-parser'
 import swaggerUi from 'swagger-ui-express'
@@ -57,6 +58,7 @@ console.log(db)
 
 server.use('/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 server.use('/api', router)
+server.use('/feli',routerPrueba)
 
 function shutdown(message, code) {
     console.log(`Server ${code ? `${message}: ${code}` : 'stopped'}`)
@@ -66,6 +68,6 @@ process.on('exit', code => shutdown('About to exit with', code))
 
 initializedPassport()
 server.use(passport.initialize())
-server.use(passport.session())
+// server.use(passport.session())
 
 export default server

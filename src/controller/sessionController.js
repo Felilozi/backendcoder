@@ -24,6 +24,7 @@ export const registerUser = async (req, res) => {
 
     const { first_name, last_name, email, age, password } = req.body
     const existe = await Users.findOne({ email })
+    const hashedPassword = createHash(password)
 
     let role;
     if (email === config.ADMINEMAIL && password === config.ADMINPASS) {
@@ -38,7 +39,7 @@ export const registerUser = async (req, res) => {
         last_name,
         email,
         age,
-        password,
+        password: hashedPassword ,
         role
     }
     let result = await Users.create(user)
