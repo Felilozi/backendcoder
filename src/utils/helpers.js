@@ -1,8 +1,8 @@
 'use strict'
-import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken';
 import { config } from '../config.js'
-
+import bcrypt from 'bcrypt'
+import { Users } from '../models/usersmodel.js';
 
 const removeExtensionFilename = filename => filename.split('.').shift()
 
@@ -24,7 +24,13 @@ export const cookieExtractor = (req) => {
     }
     return token;
 };
+export const checkUser = async (email, password) => {
+    const userCheck = await Users.findOne({
+        email
+    }).exec();
+    return userCheck
 
+}
 
 export const createHash = password => bcrypt.hashSync(password,bcrypt.genSaltSync(10)) // register
 

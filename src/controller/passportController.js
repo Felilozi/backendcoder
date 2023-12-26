@@ -5,6 +5,7 @@ import passportJwt from 'passport-jwt';
 import { cookieExtractor } from '../utils/helpers.js';
 import github from 'passport-github2';
 import local from 'passport-local';
+import UserService from '../servicios/userServicios.js';
 import { config } from '../config.js';
 import { Users } from "../models/usersmodel.js";
 import { createHash, isValidPassword } from '../utils/helpers.js';
@@ -25,12 +26,13 @@ const initializedPassport = () => {
         async (jwt_payload, done) => {
             try {
                 console.log("Hola aca llego a current")
-                const user = await Users.findOne({ email: jwt_payload.email });
+                // const user = await Users.findOne({ email: jwt_payload.email });
+                const user = await UserService.getUser( jwt_payload.email )
                 if (!user) {
                     return done(null, false, { messsages: 'User not found' });
                 }
 
-                return done(null, jwt_payload);
+                return done(null, user);
             }
             catch (error) {
                 return done(error);
@@ -49,7 +51,8 @@ const initializedPassport = () => {
     },
         async (accessToken, refreshToken, profile, done) => {
             try {
-                const user = await Users.findOne({ email: profile._json.email });
+                const user = await UserService.getUser(profile._json.email)
+                // const user = await Users.findOne({ email: profile._json.email });
                 console.log('github strategy')
                 if (user) {
                     return done(null, user)
@@ -59,9 +62,10 @@ const initializedPassport = () => {
                     last_name: '',
                     email: profile._json.email,
                     age: '',
-                    password: ''
+                    password: '',
+                    cart: []
                 }
-                let result = await Users.create(newUser);
+                let result = await UserService.createUser(newUser);
                 return done(null, result)
             } catch (error) {
                 done(error)
@@ -73,7 +77,8 @@ const initializedPassport = () => {
         async (req, username, password, done) => {
             const { first_name, last_name, email, age } = req.body;
             try {
-                const user = await Users.findOne({ email: username });
+                // const user = await Users.findOne({ email: username });
+                const user = await UserService.getUser(username)
                 if (user) {
                     return done(null, false)
                 }
@@ -82,9 +87,11 @@ const initializedPassport = () => {
                     last_name,
                     email,
                     age,
-                    password: createHash(password)
+                    password: createHash(password),
+                    cart: []
                 }
-                let result = await Users.create(newUser);
+                // let result = await Users.create(newUser);
+                let result = await UserService.createUser(newUser);
                 return done(null, result)
             } catch (error) {
                 done('User Not fount' + error)
@@ -96,7 +103,8 @@ const initializedPassport = () => {
         async (req, email, password, done) => {
 
             try {
-                const user = await Users.findOne({ email: email });
+                const user = await UserService.getUser(email)
+                // const user = await Users.findOne({ email: email });
                 console.log(' User login ' + user)
                 if (!user) {
                     return done(null, false)
@@ -118,7 +126,7 @@ const initializedPassport = () => {
     })
 
     passport.deserializeUser(async (id, done) => {
-        let user = await Users.findById(id)
+        let user = await UserService.getID(id)
         done(null, user)
     })
 }

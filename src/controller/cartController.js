@@ -1,11 +1,12 @@
 'use strict'
 
-import { Cart } from '../models/cartModel.js'
+// import { Cart } from '../models/cartModel.js'
+import CartService from '../servicios/cartServicios.js' 
 
 export const getCarts = async (req, res) => {
     try {
-        const carts = await Cart.find({}).select(['-__v']).populate('products.producto');
 
+        const carts = await CartService.getCartsService()
         if (!carts) {
             return res.status(404).send({
                 status: 404,
@@ -22,7 +23,6 @@ export const getCarts = async (req, res) => {
                 data: carts,
             })
 
-            // res.json(JSON.parse(products.slice(0, limit)))
         } else {
             return res.status(200).send({
                 status: 200,
@@ -41,11 +41,7 @@ export const getCarts = async (req, res) => {
 
 export const createCart = async (req, res) => {
     try {
-        const cart = new Cart({
-            products: [],
-        })
-
-        const cartSave = await cart.save()
+        const cartSave = await CartService.createCart()
         res.status(201).send({
             cartSave,
         })
@@ -60,9 +56,7 @@ export const createCart = async (req, res) => {
 
 export const getCartbyId = async (req, res) => {
     try {
-        const query = Cart.where({ _id: req.params.cid })
-        const carts = await query.findOne().populate('products.producto');
-
+        const carts = await CartService.getCartbyId(req.id.cid)
         if (!carts) {
             return res.status(404).send({
                 status: 404,
@@ -76,14 +70,7 @@ export const getCartbyId = async (req, res) => {
             price: product.producto.price * product.quantity,
 
         }));
-        res.render('cartDetails', { products: productData });
-        // res.render('cartDetails', {products:carts.products} );
-
-        // res.status(200).send({
-        //     status: 200,
-        //     message: 'Ok',
-        //     data: carts,
-        // })
+        res.render('cartDetails', { products: productData })
     } catch (err) {
         console.log(err)
         res.status(500).send({
@@ -95,9 +82,7 @@ export const getCartbyId = async (req, res) => {
 
 export const deleteCart = async (req, res) => {
     try {
-        // const query = Product.where({ id: req.params.pid });
-        const carts = await Cart.deleteOne({ _id: req.params.cid }).populate('products.producto');
-
+        const carts = await CartService.deleteCart(req.params.cid)
         if (!carts) {
             return res.status(404).send({
                 status: 404,
@@ -124,13 +109,7 @@ export const deleteProductFromCart = async (req, res) => {
 
         const cartId = req.params.cid;
         const productId = req.params.pid;
-
-        // Buscar el carrito por su ID y actualizarlo
-        const updatedCart = await Cart.findByIdAndUpdate(
-            cartId,
-            { $pull: { products: { producto: productId } } },
-            { new: true }
-        ).populate('products.producto');
+        const updatedCart = await CartService.deleteProductFromCart(cartId, productId)
 
         if (updatedCart) {
             console.log('Product deleted from cart', updatedCart);
@@ -155,25 +134,15 @@ export const addProductToCart = async (req, res) => {
     const { quantity } = req.body;
 
     try {
-        const cart = await Cart.findOneAndUpdate(
-            { _id: cid, 'products.producto': pid },
-            { $inc: { 'products.$.quantity': quantity || 1 } },
-            { new: true } // Return the modified document
-        ).populate('products.producto');
+        const cart = await CartService.addProductToCart(cid, pid, quantity)
 
         if (!cart) {
             const newCart = {
                 producto: pid,
                 quantity: quantity || 1
             };
-            const savedCart = await Cart.findOneAndUpdate({
-                _id: cid
-            },
-                { $push: { products: newCart } },
-                { new: true } // Return the modified document
-            ).populate('products.producto');
+            const savedCart = await CartService.addProductToCartsavedCart(cid, newCart)
 
-            // return res.json(savedCart);
             const productData = savedCart.products.map(product => ({
                 title: product.producto.title,
                 description: product.producto.description,
@@ -194,8 +163,6 @@ export const addProductToCart = async (req, res) => {
             }));
             res.render('cartDetails', { products: productData });
         }
-
-        // At this point, 'cart' contains the cart with the updated quantity
     } catch (err) {
         console.log(err)
         res.status(500).send({
@@ -206,7 +173,7 @@ export const addProductToCart = async (req, res) => {
 }
 export const updateProduct = async (req, res) => {
     try {
-        // 1. Validar la entrada
+
         const { products } = req.body;
 
         if (!Array.isArray(products)) {
@@ -215,10 +182,7 @@ export const updateProduct = async (req, res) => {
                 message: 'La propiedad "products" debe ser un arreglo.',
             });
         }
-
-        // 2. Buscar el carrito por ID
-        const cartId = req.params.cid;
-        const existingCart = await Cart.findById(cartId);
+        const existingCart = await CartService.updateProduct(req.params.cid)
 
         if (!existingCart) {
             return res.status(404).json({
@@ -226,12 +190,10 @@ export const updateProduct = async (req, res) => {
                 message: 'Carrito no encontrado.',
             });
         }
-
-        // 3. Actualizar el carrito
         existingCart.products = products;
         const updatedCart = await existingCart.save();
 
-        // 4. Responder con la respuesta actualizada
+
         res.status(200).json({
             status: 'success',
             message: 'Carrito actualizado con éxito.',
