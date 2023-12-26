@@ -1,10 +1,9 @@
 'use strict'
 import productService from '../servicios/productoServicios.js' ; 
-import UserService from '../servicios/userServicios.js';
-
+import UserService from '../servicios/userServicios.js' ; 
 
 export const getProducts = async (req, res) => {
-    try {
+    try { 
         const result = await productService.getProduct(req.query);
         const response = {
             status: 'success',
@@ -27,7 +26,7 @@ export const getProducts = async (req, res) => {
 
         console.log(userData)
         let admin;
-        if (userData._doc.role === 'ADMIN') {
+        if (userData.role === 'ADMIN') {
             admin = true
         } else {
             admin = false

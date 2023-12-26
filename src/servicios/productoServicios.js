@@ -1,5 +1,6 @@
 import { Product } from '../models/productModel.js'
 class productService {
+
     static async getProduct(data) {
         try {
             const limit = parseInt(data.limit, 10) || 2;
@@ -76,7 +77,7 @@ class productService {
     }
     static async modifyProduct(id) {
         try {
-            const filter = { _id:id }
+            const filter = { _id: id }
             const update = {
                 title: req.body.title,
                 description: req.body.description,
@@ -90,7 +91,7 @@ class productService {
 
             // `doc` is the document _after_ `update` was applied because of
             // `returnOriginal: false`
-            const result= await Product.findOneAndUpdate(filter, update, {
+            const result = await Product.findOneAndUpdate(filter, update, {
                 returnOriginal: false,
             })
             return result
@@ -103,4 +104,5 @@ class productService {
 
 
 }
-export default new productService();
+
+export default productService;

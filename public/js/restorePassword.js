@@ -13,7 +13,7 @@ form.addEventListener('submit', e => {
         }
     }).then(result => {
         if (result.status === 200) {
-            window.location.href = '/api/login';;
+            window.location.href = '/api/views/login';;
         }
     })
 })

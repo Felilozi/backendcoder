@@ -2,18 +2,20 @@ import mongoose from 'mongoose'
 
 const { Schema, model } = mongoose
 const usuarioSchema = new Schema({
-    first_name:String,
-    last_name:String,
-    email:String,
-    age:Number,
-    password:String,
+    first_name: String,
+    last_name: String,
+    email: String,
+    age: Number,
+    password: String,
     cart: {
-        type: {
-            id: {
+        type: [{
+            cid: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "carts"
             }
         }
+        ], default: [],
+        required: true
     },
     role: {
         type: String,

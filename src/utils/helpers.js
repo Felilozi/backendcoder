@@ -1,4 +1,5 @@
 'use strict'
+
 import jwt from 'jsonwebtoken';
 import { config } from '../config.js'
 import bcrypt from 'bcrypt'
@@ -9,11 +10,7 @@ const removeExtensionFilename = filename => filename.split('.').shift()
 export { removeExtensionFilename }
 
 export const generateToken = (user) => {
-    const token = jwt.sign({ user }, config.PRIVATE_KEY, { expires: '24h' })
-    res.cookie('currentToken', token, {
-        maxAge: 60 * 60 * 1000,
-        httpOnly: true
-    });
+    const token = jwt.sign({ user }, config.PRIVATE_KEY, { expiresIn: '24h' })
     return token;
 }
 
@@ -22,8 +19,10 @@ export const cookieExtractor = (req) => {
     if (req && req.cookies) { // si existe la cookie
         token = req.cookies['currentToken'];
     }
+
     return token;
 };
+
 export const checkUser = async (email, password) => {
     const userCheck = await Users.findOne({
         email
@@ -31,8 +30,13 @@ export const checkUser = async (email, password) => {
     return userCheck
 
 }
+export const createHash = (password) => {
+    const result = bcrypt.hashSync(password, bcrypt.genSaltSync(10)) // register
+    return result
+}
 
-export const createHash = password => bcrypt.hashSync(password,bcrypt.genSaltSync(10)) // register
+export const isValidPassword = (user, password) => {
+    let result = bcrypt.compareSync(password, user)
+    return result;
 
-export const isValidPassword = ( user, password) => bcrypt.compareSync(password,user.password) //  login 
-
+ } //  login 

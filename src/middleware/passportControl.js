@@ -2,20 +2,6 @@ import passport from "passport";
 import { generateToken, checkUser, isValidPassword } from "../utils/helpers.js";
 
 const passportControl = (strategy) => {
-//     return (req, res, next) => {
-//         console.log("passport control", strategy)
-//         passport.authenticate(strategy, { session: false }, (error, user, info) => {
-//             if (error) {
-//                 return next(error);
-//             }
-//             if (!user) {
-//                 return res.status(401).json({Error:"Este es el error" });
-//             }
-//             req.user = user;
-//             next();
-//         })(req, res, next);
-//     };
-
 
 return (req, res, next) => {
     passport.authenticate('current', { session: false }, (error, user, info) => {
@@ -26,7 +12,6 @@ return (req, res, next) => {
 
             async function checking(email, password) {
                 const checkUsers = await checkUser(email, password);
-                console.log(checkUsers);
                 return checkUsers;
             }
 
@@ -35,10 +20,14 @@ return (req, res, next) => {
                 const checkUsers = await checking(req.body.email, req.body.password);
 
                 if (checkUsers) {
-                    if (!isValidPassword(checkUsers._doc, req.body.password)) {
+                    console.log(checkUsers.password,"loge");
+                    const result = isValidPassword(checkUsers.password, req.body.password)
+                    if (!result) {
+                        console.log(req.body.password);
                         throw new Error("Incorrect password");
                     }
 
+                    console.log('password correct');
                     const access_token = generateToken(req.body.email);
                     res.cookie('currentToken', access_token, {
                         maxAge: 60 * 60 * 1000,
@@ -54,11 +43,11 @@ return (req, res, next) => {
                     next();
                 })
                 .catch((error) => {
-                    // Handle errors here
+                    console.log(error)
                     res.status(403).send({ status: "error", error: error.message });
                 });
         } else {
-            if (!isValidPassword(user._doc, req.body.password)) {
+            if (!isValidPassword(user.password, req.body.password)) {
                 return res.status(403).send({ status: "error", error: "Incorrect password" });
             }
             req.user = user;

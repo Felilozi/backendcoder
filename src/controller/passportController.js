@@ -82,12 +82,13 @@ const initializedPassport = () => {
                 if (user) {
                     return done(null, false)
                 }
+                const hashedPassword = createHash(password)
                 const newUser = {
                     first_name,
                     last_name,
                     email,
                     age,
-                    password: createHash(password),
+                    password: hashedPassword,
                     cart: []
                 }
                 // let result = await Users.create(newUser);
