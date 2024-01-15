@@ -23,3 +23,4 @@ const usuarioSchema = new Schema({
     }
 })
 export const Users = model('users', usuarioSchema)
+//ok

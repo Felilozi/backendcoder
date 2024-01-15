@@ -4,7 +4,31 @@ import UserService from '../servicios/userServicios.js' ;
 
 export const getProducts = async (req, res) => {
     try { 
+        const currPage = parseInt(req.query.page) || 1;
         const result = await productService.getProduct(req.query);
+        if (result.length === 0) {
+            const responseError = {
+                status: 'error',
+                payload: 'No products found',
+            };
+
+            return res.status(404).json(responseError);
+        }
+        // const hasNextPage = page < totalPages;
+        // const hasPrevPage = page > 1;
+        const hasNextPage = result.hasNextPage;
+        const hasPrevPage = result.hasPrevPage;
+        let prevLink = null;
+        let nextLink = null;
+
+        if (hasPrevPage) {
+            prevLink = `/api/product?page=${currPage - 1}`;
+        }
+
+        if (hasNextPage) {
+            nextLink = `/api/product?page=${currPage + 1}`;
+        }
+        const totalPages = result.totalPages;
         const response = {
             status: 'success',
             payload: result.docs,
@@ -111,7 +135,9 @@ export const deleteProduct = async (req, res) => {
 
 export const modifyProduct = async (req, res) => {
     try {
-        const products = await productService.modifyProduct(req.params.pid);
+        const filter = { _id: req.params.pid }
+        // const products = await productService.modifyProduct(req.params.pid);
+        const products = await productService.modifyProduct(req.body)
         if (!products) {
             return res.status(404).send({
                 status: 404,

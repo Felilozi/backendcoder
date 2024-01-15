@@ -1,12 +1,16 @@
 'use strict'
 
-// import { Cart } from '../models/cartModel.js'
+import { Cart } from '../models/cartModel.js'
 import CartService from '../servicios/cartServicios.js' 
+import productService from '../services/productService.js';
+import { generateUniqueCode } from '../utils/helpers.js';
+
 
 export const getCarts = async (req, res) => {
     try {
+        const carts = await CartService.getCarts()
 
-        const carts = await CartService.getCartsService()
+        // const carts = await CartService.getCartsService()
         if (!carts) {
             return res.status(404).send({
                 status: 404,
@@ -41,7 +45,8 @@ export const getCarts = async (req, res) => {
 
 export const createCart = async (req, res) => {
     try {
-        const cartSave = await CartService.createCart()
+        // const cartSave = await CartService.createCart()
+        const cartSave = await CartService.createCart(req.session.user.email)
         res.status(201).send({
             cartSave,
         })
@@ -56,7 +61,8 @@ export const createCart = async (req, res) => {
 
 export const getCartbyId = async (req, res) => {
     try {
-        const carts = await CartService.getCartbyId(req.id.cid)
+        // const carts = await CartService.getCartbyId(req.id.cid)
+        const carts = await CartService.getCartId(req.params.cid)
         if (!carts) {
             return res.status(404).send({
                 status: 404,
@@ -175,35 +181,124 @@ export const updateProduct = async (req, res) => {
     try {
 
         const { products } = req.body;
+        const cartId = req.params.cid;
 
-        if (!Array.isArray(products)) {
-            return res.status(400).json({
+        const updatedCart = await CartService.updateProduct(products, cartId)
+
+        if (updatedCart) {
+            res.status(200).json({
+                status: 'success',
+                message: 'Carrito actualizado con éxito.',
+                data: updatedCart,
+            });
+        } else {
+            res.status(404).json({
                 status: 'error',
-                message: 'La propiedad "products" debe ser un arreglo.',
+                message: `No se encontró carrito ${cartId} para actualizar`,
+                data: updatedCart,
             });
         }
-        const existingCart = await CartService.updateProduct(req.params.cid)
 
-        if (!existingCart) {
-            return res.status(404).json({
-                status: 'error',
-                message: 'Carrito no encontrado.',
-            });
-        }
-        existingCart.products = products;
-        const updatedCart = await existingCart.save();
+        // if (!Array.isArray(products)) {
+        //     return res.status(400).json({
+        //         status: 'error',
+        //         message: 'La propiedad "products" debe ser un arreglo.',
+        //     });
+        // }
+        // const existingCart = await CartService.updateProduct(req.params.cid)
+
+        // if (!existingCart) {
+        //     return res.status(404).json({
+        //         status: 'error',
+        //         message: 'Carrito no encontrado.',
+        //     });
+        // }
+        // existingCart.products = products;
+        // const updatedCart = await existingCart.save();
 
 
-        res.status(200).json({
-            status: 'success',
-            message: 'Carrito actualizado con éxito.',
-            data: updatedCart,
-        });
+        // res.status(200).json({
+        //     status: 'success',
+        //     message: 'Carrito actualizado con éxito.',
+        //     data: updatedCart,
+        // });
     } catch (error) {
         console.error('Error actualizando el carrito:', error);
         res.status(500).json({
             status: 'error',
             message: 'Error interno del servidor.',
         });
+    }
+};
+export const purchaseCart = async (req, res) => {
+
+    try {
+
+        const cartId = req.params.cid;
+
+        // Obtener el carrito
+        const cart = await cartService.getCartId(cartId)
+
+        const processedProducts = [];
+        const unprocessedProductIds = [];
+        // Verificar el stock y actualizar la base de datos
+        for (const cartProduct of cart.products) {
+
+            const productId = cartProduct.producto;
+            const requestedQuantity = cartProduct.quantity;
+
+            const product = await productService.getProductId(productId);
+
+            if (product.stock >= requestedQuantity && product.status !== false) {
+                // Suficiente stock, restar del stock y continuar
+                product.stock -= requestedQuantity;
+                if (product.stock === 0) {
+                    product.status = false;
+                }
+                const product = await productService.getProductId(productId);
+                const productUpdated = await updateProduct.getProductId(product);// Llenar el array con la información del producto procesado
+                processedProducts.push({
+                    //   productId: product._id,
+                    product: product.title,
+                    quantity: requestedQuantity,
+                    //   unitPrice: product.price,
+                });
+
+                // Quitar el producto del array 'products' en el carrito
+                await cartService.deleteProduct(cartId, productId)
+
+            } else {
+                // No hay suficiente stock, agregar el ID del producto al array de no procesados
+                unprocessedProductIds.push(`No hay Stock disponible de: ${cartProduct._doc.title}`);
+            }
+        }
+
+        if (processedProducts.length > 0) {
+            // Si hay productos procesados, generar el ticket
+            const ticket = {
+                code: generateUniqueCode(),
+                purchase_datetime: new Date(),
+                amount: processedProducts.reduce((total, product) => total + product.quantity * product.unitPrice, 0),
+                purchaser: cart.purchaser,
+                processedProducts,
+            };
+
+
+            // Puedes hacer algo con el ticket, como guardarlo en la base de datos o devolverlo como respuesta
+            // En este ejemplo, simplemente lo devolvemos como respuesta
+            if (unprocessedProductIds.length > 0) {
+                res.status(200).json({ message: 'Compra exitosa', ticket, unprocessedProductIds });
+            } else {
+                res.status(200).json({ message: 'Compra exitosa', ticket })
+            }
+        }
+
+        // if (unprocessedProductIds.length > 0) {
+        //   // Si hay productos no procesados, devolver sus IDs
+        //   res.status(400).json({ error: 'Algunos productos no tienen suficiente stock', unprocessedProductIds });
+        // }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
 };

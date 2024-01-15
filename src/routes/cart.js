@@ -13,7 +13,8 @@ router.get('/:cid', getCartbyId)
 
 router.delete('/:cid', deleteCart)
 // Create a new product or add products to Cart
-router.post('/:cid/products/:pid', addProductToCart)
+// router.post('/:cid/products/:pid', addProductToCart)
+router.post('/:cid/products/:pid',roleAuth('current',false), addProductToCart)
 
 
 // DELETE /api/carts/:cid/products/:pid
@@ -21,5 +22,6 @@ router.post('/:cid/products/:pid', addProductToCart)
 router.delete('/:cid/products/:pid', deleteProductFromCart);
 //Agrega varios productos 
 router.put('/:cid', updateProduct);
+router.post('/:cid/purchase', roleAuth('current',false), purchaseCart)
 
 export { router }

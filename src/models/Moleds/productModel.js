@@ -44,3 +44,4 @@ ProductSchema.index({ price: 1 , price: -1});
 ProductSchema.plugin(mongoosePaginate);
 
 export const Product = model('products', ProductSchema)
+//ok

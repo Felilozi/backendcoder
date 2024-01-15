@@ -1,8 +1,8 @@
 'use strict'
 
 import express from 'express'
-// import { productSchema } from '../models/productModel.js'
-// import { ProductManager } from '../controller/ProductManager.js'; // Adjust the import path as needed
+import passport from 'passport';
+import roleAuth from '../middlewares/roleAuth.js';
 import {
     getProducts,
     saveProduct,
@@ -12,10 +12,6 @@ import {
 } from '../controller/productController.js'
 
 const router = express.Router()
-
-// Create an instance of the ProductManager class, specifying the path to the data file
-// const productManager = new ProductManager('products.json'); // Specify the correct file path
-
 // Middleware to parse JSON request bodies
 router.use(express.json())
 router.use(express.urlencoded({ extended: true }))
@@ -27,12 +23,16 @@ router.get('/', getProducts)
 router.get('/:pid', getProductByID)
 
 // Create a new product
-router.post('/', saveProduct)
+// router.post('/', saveProduct)
+router.post('/', roleAuth('current',true),saveProduct)
 
 // Update a product by ID
-router.put('/:pid', modifyProduct)
+// router.put('/:pid', modifyProduct)
+router.put('/:pid',roleAuth('current',true), modifyProduct)
 
 // Delete a product by ID
-router.delete('/:pid', deleteProduct)
+// router.delete('/:pid', deleteProduct)
+router.delete('/:pid',roleAuth('current',true), deleteProduct)
+
 
 export { router }

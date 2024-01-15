@@ -3,7 +3,7 @@
 import jwt from 'jsonwebtoken';
 import { config } from '../config.js'
 import bcrypt from 'bcrypt'
-import { Users } from '../models/usersmodel.js';
+import { Users } from '../models/Moleds/usersmodel.js';
 
 const removeExtensionFilename = filename => filename.split('.').shift()
 
@@ -30,13 +30,16 @@ export const checkUser = async (email, password) => {
     return userCheck
 
 }
-export const createHash = (password) => {
-    const result = bcrypt.hashSync(password, bcrypt.genSaltSync(10)) // register
-    return result
+export const createHash = password => bcrypt.hashSync(password, bcrypt.genSaltSync(10)) // register
+export const isValidPassword = (user, password) => bcrypt.compareSync(password, user) //  login
+
+//Lo nuevo
+export function generateUniqueCode(prefix = 'ORD') {
+    const randomNumber = Math.floor(Math.random() * 10000); // Número aleatorio entre 0 y 9999
+    const timestamp = new Date().getTime(); // Marca de tiempo en milisegundos
+
+    // Concatenar el prefijo, el número aleatorio y la marca de tiempo para formar el código
+    const code = `${prefix}-${randomNumber}-${timestamp}`;
+
+    return code;
 }
-
-export const isValidPassword = (user, password) => {
-    let result = bcrypt.compareSync(password, user)
-    return result;
-
- } //  login 
