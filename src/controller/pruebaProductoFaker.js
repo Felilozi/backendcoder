@@ -1,5 +1,5 @@
 'use strict'
-import faker from 'faker'
+import { faker } from '@faker-js/faker';
 export const generateMockProduct = (count) => {
     const mockProduct = [];
     for (let i = 0; i < count; i++) {

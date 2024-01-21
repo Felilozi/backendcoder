@@ -1,4 +1,5 @@
 'use strict'
+import { ERROR } from '../dictionaryError.js';
 import productService from '../servicios/productoServicios.js' ; 
 import UserService from '../servicios/userServicios.js' ; 
 
@@ -9,7 +10,7 @@ export const getProducts = async (req, res) => {
         if (result.length === 0) {
             const responseError = {
                 status: 'error',
-                payload: 'No products found',
+                payload: ERROR.NOPRODUCTFOUND,
             };
 
             return res.status(404).json(responseError);
@@ -95,7 +96,7 @@ export const getProductByID = async (req, res) => {
         if (!products) {
             return res.status(404).send({
                 status: 404,
-                message: 'No products found',
+                message:ERROR.NOPRODUCTFOUND,
             })
         }
 
@@ -116,7 +117,7 @@ export const deleteProduct = async (req, res) => {
         if (!products) {
             return res.status(404).send({
                 status: 404,
-                message: 'No products deleted',
+                message: ERROR.NOPRODUCTSDELETED,
             })
         }
         return res.status(200).send({
@@ -141,7 +142,7 @@ export const modifyProduct = async (req, res) => {
         if (!products) {
             return res.status(404).send({
                 status: 404,
-                message: 'No products updated',
+                message: ERROR.NOPRODUCTSUPDATED,
             })
         }
 

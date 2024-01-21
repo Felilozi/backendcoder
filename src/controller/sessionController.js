@@ -1,10 +1,8 @@
 'use strict'
-
-import { Users } from "../Models/usersmodel.js";
 import UserService from '../servicios/userServicios.js';
-
 import { config } from '../config.js';
 import { createHash ,isValidPassword } from '../utils/helpers.js';
+import { Users } from '../models/Models/usersModel.js';
 
 export const restorePassword = async (req, res) =>{
     const { email, password } = req.body

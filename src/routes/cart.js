@@ -1,5 +1,6 @@
 import express from 'express'
-import { getCarts, createCart, getCartbyId, deleteCart, addProductToCart,deleteProductFromCart,updateProduct} from '../controller/cartController.js'
+import { getCarts, createCart, getCartbyId, deleteCart, addProductToCart,deleteProductFromCart,updateProduct, purchaseCart} from '../controller/cartController.js'
+import roleAuth from '../middleware/roleAuth.js'
 const router = express.Router()
 router.use(express.json())
 router.use(express.urlencoded({ extended: true }))

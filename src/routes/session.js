@@ -3,7 +3,6 @@
 import express from 'express'
 import { logoutUser, restorePassword } from "../controller/sessionController.js";
 import passport from 'passport';
-// import { generateToken } from '../utils/helpers.js';
 import passportControl from '../middleware/passportControl.js';
 import { ERROR } from '../dictionaryError.js';
 

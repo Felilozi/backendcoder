@@ -1,22 +1,10 @@
 import { Cart } from "../models/Models/cartModel.js";
-//nuevo
+
 import { getDAOS } from "../models/DAO/indexDAO.js"
 const { cartDao } = getDAOS();
 
 
 class CartService {
-    // static async getCartsService() {
-    //     try {
-    //         const result = await Cart.
-    //             find({})
-    //             .select(['-__v'])
-    //             .populate('products.producto');
-    //         return result
-
-    //     } catch (error) {
-    //         throw new Error(error.message)
-    //     }
-    // }
     static async getCarts() {
         try {
             const results = await cartDao.getCarts();
@@ -26,20 +14,6 @@ class CartService {
             throw new Error(error.message)
         }
     }
-    //////--------------------------///////////
-    // static async createCart() {
-    //     try {
-    //         const cart = new Cart({
-    //             products: [],
-    //         })
-    //         const result = await cart.save()
-
-    //         return result
-
-    //     } catch (error) {
-    //         throw new Error(error.message)
-    //     }
-    // }
     static async createCart(email) {
         try {
             const cart = new Cart({
@@ -56,22 +30,6 @@ class CartService {
         }
     }
 
-
-
-
-    ////////------------////////////////////
-    // static async getCartbyId(id) {
-    //     try {
-    //         const query = Cart.where({ _id: id })
-    //         const result = await query
-    //             .findOne()
-    //             .populate('products.producto');
-    //         return result
-
-    //     } catch (error) {
-    //         throw new Error(error.message)
-    //     }
-    // }
     static async getCartId(id) {
         try {
 
@@ -83,19 +41,7 @@ class CartService {
             throw new Error(error.message)
         }
     }
-    //-------------------------------------------------//
 
-    // static async deleteCart(id) {
-    //     try {
-    //         const result = await Cart
-    //             .deleteOne({ _id: id })
-    //             .populate('products.producto');
-    //         return result
-
-    //     } catch (error) {
-    //         throw new Error(error.message)
-    //     }
-    // }
     
     static async deleteCart(id) {
         try {
@@ -108,7 +54,7 @@ class CartService {
             throw new Error(error.message)
         }
     }
-//---------------------------------------------------///
+
 static async deleteProduct(cartId,productId) {
     try {
 
@@ -120,21 +66,6 @@ static async deleteProduct(cartId,productId) {
     }
 }
 
-    // static async deleteProductFromCart(cartId, productId) {
-    //     try {
-    //         const result = await Cart.findByIdAndUpdate(
-    //             cartId,
-    //             { $pull: { products: { producto: productId } } },
-    //             { new: true }
-    //         ).populate('products.producto');
-    //         return result
-
-
-    //     } catch (error) {
-    //         throw new Error(error.message)
-    //     }
-    // }
-    //-------------------------------------------//
     static async addProduct(product, quantity) {
         try {
 
@@ -165,22 +96,6 @@ static async deleteProduct(cartId,productId) {
         }
     }
 
-    // static async addProductToCart(cid, pid, quantity) {
-    //     try {
-    //         const result = await Cart.findOneAndUpdate(
-    //             { _id: cid, 'products.producto': pid },
-    //             { $inc: { 'products.$.quantity': quantity || 1 } },
-    //             { new: true } // Return the modified document
-    //         ).populate('products.producto');
-
-    //         return result
-
-    //     } catch (error) {
-    //         throw new Error(error.message)
-    //     }
-    // }
-    // savedCart
-    //------------------------------------------------------//
     static async updateProduct(products, cartId) {
         try {
 
@@ -210,32 +125,5 @@ static async deleteProduct(cartId,productId) {
         }
     }
 }
-//     static async addProductToCartsavedCart(id,newCart) {
-//         try {
-//             const result = await Cart.findOneAndUpdate({
-//                 _id: id
-//             },
-//                 { $push: { products: newCart } },
-//                 { new: true } // Return the modified document
-//             ).populate('products.producto');
 
-//             return result
-
-//         } catch (error) {
-//             throw new Error(error.message)
-//         }
-//     }
-//     static async updateProduct(id) {
-//         try {
-//         const cartId = id
-//         const result = await Cart.findById(cartId);
-
-//             return result
-
-//         } catch (error) {
-//             throw new Error(error.message)
-//         }
-//     }
-
-// }
 export default CartService;

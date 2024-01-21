@@ -7,7 +7,6 @@ import github from 'passport-github2';
 import local from 'passport-local';
 import UserService from '../servicios/userServicios.js';
 import { config } from '../config.js';
-import { Users } from "../models/Models/usersmodel.js";
 import { createHash, isValidPassword } from '../utils/helpers.js';
 
 const LocalStrategy = local.Strategy;

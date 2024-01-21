@@ -1,8 +1,7 @@
 'use strict'
 
 import express from 'express'
-import passport from 'passport';
-import roleAuth from '../middlewares/roleAuth.js';
+
 import {
     getProducts,
     saveProduct,
@@ -10,6 +9,7 @@ import {
     deleteProduct,
     modifyProduct,
 } from '../controller/productController.js'
+import roleAuth from '../middleware/roleAuth.js'
 
 const router = express.Router()
 // Middleware to parse JSON request bodies

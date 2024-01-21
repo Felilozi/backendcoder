@@ -3,7 +3,7 @@
 import jwt from 'jsonwebtoken';
 import { config } from '../config.js'
 import bcrypt from 'bcrypt'
-import { Users } from '../models/Models/usersmodel.js';
+import { Users } from '../models/Models/usersModel.js';
 
 const removeExtensionFilename = filename => filename.split('.').shift()
 

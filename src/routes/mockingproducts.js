@@ -1,7 +1,7 @@
 'use strict'
 
 import express from 'express'
-import { generateMockProduct } from '../controller/pruebaProductoFaker'
+import { generateMockProduct } from '../controller/pruebaProductoFaker.js'
 
 const router = express.Router()
 router.use(express.json())

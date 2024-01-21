@@ -1,10 +1,10 @@
 'use strict'
 
-import { Cart } from '../Models/cartModel.js'
 import CartService from '../servicios/cartServicios.js' 
-import productService from '../services/productService.js';
+
 import { generateUniqueCode } from '../utils/helpers.js';
 import { ERROR } from '../dictionaryError.js';
+import productService from '../servicios/productoServicios.js';
 
 
 export const getCarts = async (req, res) => {
@@ -93,7 +93,7 @@ export const deleteCart = async (req, res) => {
         if (!carts) {
             return res.status(404).send({
                 status: 404,
-                message: 'No carts deleted',
+                message:ERROR.NOCARTSDELETED,
             })
         }
 
@@ -124,14 +124,13 @@ export const deleteProductFromCart = async (req, res) => {
         }
 
         else {
-            // Cart with the given ID not found
-            console.log('Cart not found');
-            res.status(404).json({ message: 'Cart not found' });
+            // console.log('Cart not found');
+            res.status(404).json({ message: ERROR.NOCARTSFOUND });
         }
     } catch (error) {
         // Handle error
         console.error('Error deleting product from cart:', error);
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({ message: ERROR.INTERNALSERVERERROR });
     }
 };
 
@@ -284,20 +283,12 @@ export const purchaseCart = async (req, res) => {
                 processedProducts,
             };
 
-
-            // Puedes hacer algo con el ticket, como guardarlo en la base de datos o devolverlo como respuesta
-            // En este ejemplo, simplemente lo devolvemos como respuesta
             if (unprocessedProductIds.length > 0) {
                 res.status(200).json({ message: 'Compra exitosa', ticket, unprocessedProductIds });
             } else {
                 res.status(200).json({ message: 'Compra exitosa', ticket })
             }
         }
-
-        // if (unprocessedProductIds.length > 0) {
-        //   // Si hay productos no procesados, devolver sus IDs
-        //   res.status(400).json({ error: 'Algunos productos no tienen suficiente stock', unprocessedProductIds });
-        // }
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error interno del servidor' });
