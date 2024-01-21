@@ -1,4 +1,4 @@
-import { Ticket } from "../schemas/ticketModel.js";
+import { Ticket } from "../Models/ticket.Model.js";
 
 export class TicketDAO {
     async getTicket() {

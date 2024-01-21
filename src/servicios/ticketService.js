@@ -1,6 +1,6 @@
 import { HTTP_STATUS, HttpError } from "../utils/response.utils.js"
 
-import { getDAOS } from "../models/DAO/indexDAO.js";
+import { getDAOS } from "../models/DAO/indexDAO.js"
 
 const { ticketsDao, productsDao, cartDao, usersDao } = getDAOS();
 

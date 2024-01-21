@@ -1,6 +1,6 @@
 'use strict'
 
-import { Users } from "../models/usersmodel.js";
+import { Users } from "../Models/usersmodel.js";
 import UserService from '../servicios/userServicios.js';
 
 import { config } from '../config.js';

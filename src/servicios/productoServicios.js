@@ -1,5 +1,5 @@
-import { Product } from '../models/Moleds/productModel.js'
-import { getDAOS } from "../models/daos/index.dao.js";
+import { Product } from '../models/Models/productModel.js'
+import { getDAOS } from "../models/DAO/indexDAO.js"
 const { productsDao } = getDAOS();
 class productService {
     static async getProducts(query) {

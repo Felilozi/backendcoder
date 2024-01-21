@@ -5,6 +5,7 @@ import { logoutUser, restorePassword } from "../controller/sessionController.js"
 import passport from 'passport';
 // import { generateToken } from '../utils/helpers.js';
 import passportControl from '../middleware/passportControl.js';
+import { ERROR } from '../dictionaryError.js';
 
 
 const router = express.Router()
@@ -37,7 +38,7 @@ router.post('/register', passport.authenticate('register', {
 })
 
 router.get('/failregister', async (req, res) => {
-    res.send({ error: 'failed' })
+    res.send({ error: ERROR.ERRORREGISTER })
 })
 
 router.post('/login', passportControl('current', {
@@ -59,7 +60,7 @@ router.post('/login', passportControl('current', {
 })
 
 router.get('/failLogin', async (req, res) => {
-    res.send({ error: 'failed' })
+    res.send({ error: ERROR.ERRORLOGIN})
 })
 
 export { router };

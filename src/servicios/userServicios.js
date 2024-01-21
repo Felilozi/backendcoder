@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 // import { Users } from '../models/Moleds/usersmodel.js'
-import { getDAOS } from "../models/daos/index.dao.js";
+import { getDAOS } from "../models/DAO/indexDAO.js"
 const { usersDao } = getDAOS();
 
 
@@ -9,7 +9,7 @@ class UserService {
         try {
             // data.password = bcrypt.hashSync(data.password, bcrypt.genSaltSync(10))
             // const result = await Users.create(data)
-            const result = await usersDao.createUser(data)
+            const result = await usersDao.createUsers(data)
             return result
         } catch (error) {
             throw new Error(error.message)

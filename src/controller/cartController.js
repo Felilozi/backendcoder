@@ -1,9 +1,10 @@
 'use strict'
 
-import { Cart } from '../models/cartModel.js'
+import { Cart } from '../Models/cartModel.js'
 import CartService from '../servicios/cartServicios.js' 
 import productService from '../services/productService.js';
 import { generateUniqueCode } from '../utils/helpers.js';
+import { ERROR } from '../dictionaryError.js';
 
 
 export const getCarts = async (req, res) => {
@@ -14,7 +15,7 @@ export const getCarts = async (req, res) => {
         if (!carts) {
             return res.status(404).send({
                 status: 404,
-                message: 'No carts found',
+                message: ERROR.NOCARTSFOUND,
             })
         }
 
@@ -66,7 +67,7 @@ export const getCartbyId = async (req, res) => {
         if (!carts) {
             return res.status(404).send({
                 status: 404,
-                message: 'No cart found',
+                message: ERROR.NOCARTSFOUND,
             })
         }
         const productData = carts.products.map(product => ({

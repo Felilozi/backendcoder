@@ -1,6 +1,6 @@
-import { Cart } from "../models/Moleds/cartModel.js";
+import { Cart } from "../models/Models/cartModel.js";
 //nuevo
-import { getDAOS } from "../models/daos/index.dao.js";
+import { getDAOS } from "../models/DAO/indexDAO.js"
 const { cartDao } = getDAOS();
 
 
