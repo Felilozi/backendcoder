@@ -1,0 +1,20 @@
+error: Error here {"timestamp":"2024-01-29T13:15:25.054Z"}
+error: This is a test error {"timestamp":"2024-01-29T13:15:25.056Z"}
+error: Error here {"timestamp":"2024-01-29T13:16:39.867Z"}
+error: This is a test error {"timestamp":"2024-01-29T13:16:39.870Z"}
+error: Error here {"timestamp":"2024-01-29T13:19:22.979Z"}
+error: Info is not defined {"timestamp":"2024-01-29T13:19:22.982Z"}
+error: Error here {"timestamp":"2024-01-29T13:57:35.336Z"}
+error: logger is not defined {"timestamp":"2024-01-29T13:57:35.338Z"}
+fatal: This is a test fatal error {"timestamp":"2024-01-29T13:59:14.480Z"}
+error: This is a test error {"timestamp":"2024-01-29T13:59:14.484Z"}
+warning: This is a test warning {"timestamp":"2024-01-29T13:59:14.486Z"}
+info: This is a test info {"timestamp":"2024-01-29T13:59:14.487Z"}
+fatal: This is a test fatal error {"timestamp":"2024-01-29T13:59:59.779Z"}
+error: This is a test error {"timestamp":"2024-01-29T13:59:59.781Z"}
+warning: This is a test warning {"timestamp":"2024-01-29T13:59:59.782Z"}
+info: This is a test info {"timestamp":"2024-01-29T13:59:59.783Z"}
+fatal: This is a test fatal error {"timestamp":"2024-01-29T14:10:18.319Z"}
+error: This is a test error {"timestamp":"2024-01-29T14:10:18.321Z"}
+warning: This is a test warning {"timestamp":"2024-01-29T14:10:18.322Z"}
+info: This is a test info {"timestamp":"2024-01-29T14:10:18.322Z"}
