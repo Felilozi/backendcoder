@@ -18,3 +18,9 @@ fatal: This is a test fatal error {"timestamp":"2024-01-29T14:10:18.319Z"}
 error: This is a test error {"timestamp":"2024-01-29T14:10:18.321Z"}
 warning: This is a test warning {"timestamp":"2024-01-29T14:10:18.322Z"}
 info: This is a test info {"timestamp":"2024-01-29T14:10:18.322Z"}
+fatal: This is a test fatal error {"timestamp":"2024-01-29T14:15:47.078Z"}
+error: This is a test error {"timestamp":"2024-01-29T14:15:47.082Z"}
+warning: This is a test warning {"timestamp":"2024-01-29T14:15:47.083Z"}
+info: This is a test info {"timestamp":"2024-01-29T14:15:47.084Z"}
+http: This is a test http {"timestamp":"2024-01-29T14:15:47.085Z"}
+debug: This is a test debug {"timestamp":"2024-01-29T14:15:47.085Z"}

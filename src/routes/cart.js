@@ -1,12 +1,14 @@
 import express from 'express'
 import { getCarts, createCart, getCartbyId, deleteCart, addProductToCart,deleteProductFromCart,updateProduct, purchaseCart} from '../controller/cartController.js'
 import roleAuth from '../middleware/roleAuth.js'
+import { apllyPolicy } from '../middleware/auth.middleware.js'
 const router = express.Router()
 router.use(express.json())
 router.use(express.urlencoded({ extended: true }))
 
 // Create Cart
-router.post('/', createCart)
+router.post('/',apllyPolicy(['USER']), createCart)
+// router.post('/', createCart)
 
 router.get('/', getCarts)
 // Get a Cart by ID

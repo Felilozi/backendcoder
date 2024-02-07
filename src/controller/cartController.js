@@ -3,7 +3,7 @@
 import CartService from '../servicios/cartServicios.js' 
 
 import { generateUniqueCode } from '../utils/helpers.js';
-import { ERROR } from '../dictionaryError.js';
+import { ERROR ,SUCCESS} from '../dictionaryError.js';
 import productService from '../servicios/productoServicios.js';
 
 
@@ -15,7 +15,7 @@ export const getCarts = async (req, res) => {
         if (!carts) {
             return res.status(404).send({
                 status: 404,
-                message: ERROR.NOCARTSFOUND,
+                message: ERROR.CART_NOT_FOUND,
             })
         }
 
@@ -31,7 +31,7 @@ export const getCarts = async (req, res) => {
         } else {
             return res.status(200).send({
                 status: 200,
-                message: 'Ok',
+                message: SUCCESS.CARTS_RETRIEVED,
                 data: carts,
             })
         }
@@ -67,7 +67,7 @@ export const getCartbyId = async (req, res) => {
         if (!carts) {
             return res.status(404).send({
                 status: 404,
-                message: ERROR.NOCARTSFOUND,
+                message: ERROR.CART_NOT_FOUND,
             })
         }
         const productData = carts.products.map(product => ({
@@ -93,13 +93,13 @@ export const deleteCart = async (req, res) => {
         if (!carts) {
             return res.status(404).send({
                 status: 404,
-                message:ERROR.NOCARTSDELETED,
+                message: ERROR.CART_NOT_DELETED,
             })
         }
 
         return res.status(200).send({
             status: 200,
-            message: 'Ok',
+            message: SUCCESS.CART_DELETED,
             data: `Cart ID: ${req.params.cid} deleted`,
         })
     } catch (err) {
@@ -120,17 +120,17 @@ export const deleteProductFromCart = async (req, res) => {
 
         if (updatedCart) {
             console.log('Product deleted from cart', updatedCart);
-            res.status(200).json({ message: 'Product deleted from cart', cart: updatedCart });
+            res.status(200).json({ message:  SUCCESS.PRODUCT_DELETED_FROM_CART, cart: updatedCart });
         }
 
         else {
             // console.log('Cart not found');
-            res.status(404).json({ message: ERROR.NOCARTSFOUND });
+            res.status(404).json({ message: ERROR.CART_NOT_FOUND });
         }
     } catch (error) {
         // Handle error
         console.error('Error deleting product from cart:', error);
-        res.status(500).json({ message: ERROR.INTERNALSERVERERROR });
+        res.status(500).json({ message: ERROR.SERVER_ERROR});
     }
 };
 
@@ -188,45 +188,23 @@ export const updateProduct = async (req, res) => {
         if (updatedCart) {
             res.status(200).json({
                 status: 'success',
-                message: 'Carrito actualizado con éxito.',
+                message: SUCCESS.CART_UPDATED,
                 data: updatedCart,
             });
         } else {
             res.status(404).json({
                 status: 'error',
-                message: `No se encontró carrito ${cartId} para actualizar`,
+                message: ERROR.CART_NOT_UPDATED,
                 data: updatedCart,
             });
         }
 
-        // if (!Array.isArray(products)) {
-        //     return res.status(400).json({
-        //         status: 'error',
-        //         message: 'La propiedad "products" debe ser un arreglo.',
-        //     });
-        // }
-        // const existingCart = await CartService.updateProduct(req.params.cid)
 
-        // if (!existingCart) {
-        //     return res.status(404).json({
-        //         status: 'error',
-        //         message: 'Carrito no encontrado.',
-        //     });
-        // }
-        // existingCart.products = products;
-        // const updatedCart = await existingCart.save();
-
-
-        // res.status(200).json({
-        //     status: 'success',
-        //     message: 'Carrito actualizado con éxito.',
-        //     data: updatedCart,
-        // });
     } catch (error) {
-        console.error('Error actualizando el carrito:', error);
+        
         res.status(500).json({
             status: 'error',
-            message: 'Error interno del servidor.',
+            message: ERROR.SERVER_ERROR,
         });
     }
 };
@@ -255,7 +233,7 @@ export const purchaseCart = async (req, res) => {
                 if (product.stock === 0) {
                     product.status = false;
                 }
-                const product = await productService.getProductId(productId);
+                const product = await productService.getProductByID(productId);
                 const productUpdated = await updateProduct.getProductId(product);// Llenar el array con la información del producto procesado
                 processedProducts.push({
                     //   productId: product._id,
@@ -269,7 +247,7 @@ export const purchaseCart = async (req, res) => {
 
             } else {
                 // No hay suficiente stock, agregar el ID del producto al array de no procesados
-                unprocessedProductIds.push(`No hay Stock disponible de: ${cartProduct._doc.title}`);
+                unprocessedProductIds.push(`${ERROR.STOCK_LIMIT} ${cartProduct._doc.title}`);
             }
         }
 
@@ -284,13 +262,13 @@ export const purchaseCart = async (req, res) => {
             };
 
             if (unprocessedProductIds.length > 0) {
-                res.status(200).json({ message: 'Compra exitosa', ticket, unprocessedProductIds });
+                res.status(200).json({ message:  SUCCESS.PURCHASE_SUCCESSFUL, ticket, unprocessedProductIds });
             } else {
-                res.status(200).json({ message: 'Compra exitosa', ticket })
+                res.status(200).json({ message: SUCCESS.PURCHASE_SUCCESSFUL, ticket })
             }
         }
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error interno del servidor' });
+        res.status(500).json({ error: ERROR.SERVER_ERROR });
     }
 };

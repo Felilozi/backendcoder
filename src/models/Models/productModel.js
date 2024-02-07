@@ -4,7 +4,10 @@ import mongoose from 'mongoose'
 
 const { Schema, model } = mongoose
 const ProductSchema = new Schema({
-
+    id: {
+        type: Number,
+        required: false,
+    },
     title: {
         type: String,
         required: true,
@@ -32,6 +35,11 @@ const ProductSchema = new Schema({
     status: {
         type: String,
         required: true,
+    },
+    owner: {
+        type: String,
+        required: false,
+        default: 'ADMIN',
     },
     category: {
         type: String,

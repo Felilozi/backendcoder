@@ -23,6 +23,7 @@ const userSchema = new Schema({
     },
     role: {
         type: String,
+        enum: ['USER', 'ADMIN', 'PREMIUM'],
         default: 'USER' // Set default value to false for users who are not admins
     }
 },

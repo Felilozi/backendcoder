@@ -1,7 +1,7 @@
 'use strict'
 
 import express from 'express'
-import { logoutUser, restorePassword } from "../controller/sessionController.js";
+import { registerUser, loginUser, logoutUser, restorePassword,sendRestorePassword,changeRole } from "../controller/sessionController.js";
 import passport from 'passport';
 import passportControl from '../middleware/passportControl.js';
 import { ERROR } from '../dictionaryError.js';
@@ -37,7 +37,7 @@ router.post('/register', passport.authenticate('register', {
 })
 
 router.get('/failregister', async (req, res) => {
-    res.send({ error: ERROR.ERRORREGISTER })
+    res.send({ error:ERROR.USER_NOT_REGISTERED })
 })
 
 router.post('/login', passportControl('current', {
@@ -59,8 +59,21 @@ router.post('/login', passportControl('current', {
 })
 
 router.get('/failLogin', async (req, res) => {
-    res.send({ error: ERROR.ERRORLOGIN})
+    res.send({ error:ERROR.USER_NOT_LOGGED_IN})
 })
+router.delete('/logout', logoutUser)
+
+router.post('/restore', restorePassword)
+
+router.post('/sendrestore', sendRestorePassword)
+
+
+router.get('/current', passportControl('current'), (req, res) => {
+    res.json({ payload: req.user });
+});
+
+router.put('/premium/:uid', changeRole);
+
 
 export { router };
 

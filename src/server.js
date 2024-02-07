@@ -20,7 +20,10 @@ import {loggerDev, logTestErrorsdev} from './commons/loggerDev.js'
 import {loggerProD, logTestErrorsPro} from './commons/logerProd.js'
 
 
+
 const server = express()
+
+
 
 const errorLogStream = fs.createWriteStream('logs/error.log', { flags: 'a' });
 //mill 
@@ -60,7 +63,11 @@ server.engine(
 server.set("view engine", ".hbs");
 server.set('views', join(process.cwd(), 'src', 'views'));
 server.use(express.static(join(process.cwd(), '/public')));
-console.log(db)
+// server.use(session(storage))
+
+initializedPassport()
+server.use(passport.initialize())
+server.use(passport.session())
 
 server.use('/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 server.use('/api', router)
@@ -98,5 +105,7 @@ server.get('/loggerTest', (req, res) => {
         res.status(500).send('Internal Server Errorjjjj');
     }
 });
+
+
 
 export default server
