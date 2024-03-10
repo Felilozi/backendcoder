@@ -1,11 +1,13 @@
 'use strict'
 
 import express from 'express'
-import { registerUser, loginUser, logoutUser, restorePassword,sendRestorePassword,changeRole } from "../controller/sessionController.js";
+import { registerUser, loginUser, uploadFiles, logoutUser, restorePassword,sendRestorePassword,changeRole } from "../controller/userController.js";
 import passport from 'passport';
 import passportControl from '../middleware/passportControl.js';
 import { ERROR } from '../dictionaryError.js';
+import MulterConfig from '../middleware/multer.js';
 
+const multerConfig = new MulterConfig();
 
 const router = express.Router()
 router.use(express.json())
@@ -74,6 +76,7 @@ router.get('/current', passportControl('current'), (req, res) => {
 
 router.put('/premium/:uid', changeRole);
 
+router.post('/:uid/documents', multerConfig.uploadFiles(), uploadFiles);
 
 export { router };
 

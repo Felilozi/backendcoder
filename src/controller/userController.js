@@ -114,13 +114,17 @@ export const logoutUser = async (req, res) => {
             user = await UserService.getUser(uid);
     
             if (!user) {
-                user = await UserService.getID(uid);
+                user = await UserService.getId(uid);
                 if (!user) {
                     return res.status(404).json({ error: ERROR.USER_NOT_FOUND });
                 }
+
             }
     
             if (user.role === 'USER') {
+                if (!user.documents || user.documents.length === 0) {
+                    return res.status(404).json({ error: ERROR.USER_DOCUMENTS_NOT_FOUND });
+                }
             user.role = 'PREMIUM';
             }else{
                 user.role = 'USER';
@@ -133,3 +137,43 @@ export const logoutUser = async (req, res) => {
             console.error(ERROR.USER_NOT_UPDATED, error);
             return res.status(500).json({ error: ERROR.SERVER_ERROR });
         }}
+
+        export const uploadFiles = async (req, res) => {
+            try {
+                // Extract user ID from request parameters
+                const userId = req.params.uid;
+        
+                // Extract uploaded files from req.files
+                const { ID, Address, Account_state } = req.files;
+        
+                // Update user's documents array based on uploaded files
+                const user = await UserService.getUser(userId);
+        
+                if (!user) {
+                    return res.status(404).send('User not found');
+                }
+        
+                // Update user's documents array
+                if (ID) {
+                    user.documents.push({ name: 'ID', reference: ID[0].filename });
+                }
+                if (Address) {
+                    user.documents.push({ name: 'Address', reference: Address[0].filename });
+                }
+                if (Account_state) {
+                    user.documents.push({ name: 'Account_state', reference: Account_state[0].filename });
+                }
+        
+                // Save updated user document to the database
+                const result = await UserService.updateUser(userId, user);
+        
+                // Send a success response
+                if (result) {
+                    res.send('Files uploaded successfully and user documents updated!');
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                res.status(500).send('Internal Server Error');
+            }
+        }

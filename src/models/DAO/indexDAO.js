@@ -1,7 +1,7 @@
 import { CartDAO } from "./cartDAO.js";
 import { TicketDAO } from "./ticketDAO.js";
 import { ProductDAO } from "./productDAO.js";
-import { UsersDAO } from "./sessionDAO.js";
+import { UsersDAO } from "./userDAO.js";
 
 const usersDao = new UsersDAO();
 const cartDao = new CartDAO();

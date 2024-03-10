@@ -3,7 +3,7 @@ const logoutButton = document.getElementById('logoutButton'); // Get the logout 
 logoutButton.addEventListener('submit', e => {
     e.preventDefault();
     
-    fetch('/api/session/logout', {
+    fetch('/api/users/logout', {
         method: 'DELETE',
         body: JSON.stringify(),
         headers: {

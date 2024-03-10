@@ -25,7 +25,21 @@ const userSchema = new Schema({
         type: String,
         enum: ['USER', 'ADMIN', 'PREMIUM'],
         default: 'USER' // Set default value to false for users who are not admins
-    }
+    },
+    documents: {
+        type: [{
+            name: {
+                type: String
+            },
+            reference: {
+                type: String
+            }
+        }],
+        default: [],
+        required: false,
+    },
+    last_connection: { type: Date, default: Date.now },
+
 },
 )
 
