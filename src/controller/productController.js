@@ -63,7 +63,7 @@ export const getProducts = async (req, res) => {
     
     
 
-    res.render('allProductos', {
+    res.render('allproductos', {
         response,
         products: result.docs,
         user: userData,
