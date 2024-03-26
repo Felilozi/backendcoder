@@ -48,6 +48,7 @@ export const checkUser = async (email, password) => {
     return userCheck
 
 }
+
 export const createHash = password => bcrypt.hashSync(password, bcrypt.genSaltSync(10)) // register
 
 
