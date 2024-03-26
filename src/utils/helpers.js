@@ -3,7 +3,7 @@
 import jwt from 'jsonwebtoken';
 import { config } from '../config.js'
 import bcrypt from 'bcrypt'
-import { Users } from '../models/Models/usersModel.js';
+import userService from '../servicios/usersService.js';
 
 const removeExtensionFilename = filename => filename.split('.').shift()
 
@@ -44,9 +44,7 @@ export const cookieExtractor = (req) => {
 };
 
 export const checkUser = async (email, password) => {
-    const userCheck = await Users.findOne({
-        email
-    }).exec();
+    const userCheck = await userService.getUser(email)
     return userCheck
 
 }
