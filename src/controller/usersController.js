@@ -2,7 +2,7 @@
 import userService from '../servicios/usersService.js';
 import { config } from '../config.js';
 import { createHash, isValidPassword, generateMailToken } from '../utils/helpers.js';
-import { Users } from '../models/Models/usersModel.js';
+import { Users} from '../models/Models/usersmodel.js';
 import MailingService from "../servicios/mailing.js";
 import { ERROR, SUCCESS } from '../commons/dictionaryError.js';
 export const getAllUsers = async (req, res) => {

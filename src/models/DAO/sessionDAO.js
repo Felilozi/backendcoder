@@ -1,4 +1,4 @@
-import { Users } from "../Models/usersModel";
+import { Users } from "../Models/usersmodel.js";
 
 
 export class UsersDAO {
