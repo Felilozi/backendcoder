@@ -5,7 +5,6 @@
     "private": "true",
     "type": "module",
     "scripts": {
-        "postinstall": "husky install",
         "start": "node src/index.js",
         "dev": "nodemon src/index.js",
         "format": "prettier --write ."
