@@ -1,4 +1,3 @@
-
 <div>
     <h1>Bienvenido</h1>
     {{#if admin }}
@@ -8,12 +7,24 @@
     <p>{{user._doc.last_name}}</p>
     <p>{{user._doc.email}}</p>
     <p>{{user._doc.age}}</p>
+    <p id="cid" style="display: none;">{{cart}}</p>
 </div>
-
 <form id="logoutButton">
-    <button type="submit" name="logout" aria-label="Cerrar sesión">Cerrar sesión</button>
+    <input value="Logout" type="submit" name="logout" aria-label="Cerrar sesión">
 </form>
 
+<a href="/api/views/documents">Link para añadir Documents</a>
+<br>
+<br>
+<a href="/api/views/userAdmin">Modificar usuarios</a>
+<br>
+<br>
+<a href="/api/views/cart">Ir al carrito</a>
+<br>
+<br>
+<a href="/api/views/crearProducto">Crear productos</a>
+<br>
+<br>
 {{#each products}}
 <tr class='p-5'>
 
@@ -26,16 +37,18 @@
     <td>{{_doc.thumbnails}}</td>
     <td>{{_doc.category}}</td>
 </tr>
-{{!-- <button action='/api/product/{{_doc._id}}' , method='GETF' onclick="addToCart('{{_id}}')">Ver detalle del producto</button> --}}
-{{!-- <a href="/product/:pid={{_doc._id}}">Ver detalles</a> --}}
-<a href="/api/product/{{_doc._id}}">Ver detalles</a>
 
+<form class="addToCartForm">
+    <input type="hidden" class="productId" value="{{_doc._id}}">
+    <button type="button" class="addToCartButton btn btn-primary">Agregar al carrito</button>
+</form>
 {{/each}}
 {{#if response.pagination.hasPrevPage }}
-<a href="{{response.pagination.prevLink}}">Anterior  pagina</a>
+<a href="{{response.pagination.prevLink}}">Anterior pagina</a>
 {{/if}}
 {{#if response.pagination.hasNextPage}}
 <a href="{{response.pagination.nextLink}}">Siguiente pagina</a>
 {{/if}}
 
 <script src="/js/logout.js"></script>
+<script src="/js/addToCart.js"></script>

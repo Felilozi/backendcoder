@@ -14,6 +14,3 @@ form.addEventListener('submit', (evt) => {
     }).then(result => result.json()).then(json => console.log(json));
 })
 
-const getCookie = () => {
-    console.log(document.cookie)
-}

@@ -1,17 +1,17 @@
 'use strict'
-
-import CartService from '../servicios/cartServicios.js' 
-
-import { generateUniqueCode } from '../utils/helpers.js';
-import { ERROR ,SUCCESS} from '../dictionaryError.js';
+import cartService from '../servicios/cartServicios.js';
+import { generateUniqueCode, generateTicketHTML,generateMailToken} from '../utils/helpers.js';
+import { ERROR, SUCCESS } from "../commons/dictionaryError.js";
 import productService from '../servicios/productoServicios.js';
+import userService from '../servicios/usersService.js';
+import TicketService from '../servicios/ticketService.js';
 
+import MailingService from '../servicios/mailing.js';
+import { config } from '../config.js';
 
 export const getCarts = async (req, res) => {
     try {
-        const carts = await CartService.getCarts()
-
-        // const carts = await CartService.getCartsService()
+        const carts = await cartService.getCarts()
         if (!carts) {
             return res.status(404).send({
                 status: 404,
@@ -46,8 +46,8 @@ export const getCarts = async (req, res) => {
 
 export const createCart = async (req, res) => {
     try {
-        // const cartSave = await CartService.createCart()
-        const cartSave = await CartService.createCart(req.session.user.email)
+        // const cartSave = await cartService.createCart()
+        const cartSave = await cartService.createCart(req.session.user.email)
         res.status(201).send({
             cartSave,
         })
@@ -62,8 +62,8 @@ export const createCart = async (req, res) => {
 
 export const getCartbyId = async (req, res) => {
     try {
-        // const carts = await CartService.getCartbyId(req.id.cid)
-        const carts = await CartService.getCartId(req.params.cid)
+
+        const carts = await cartService.getCartId(req.params.cid)
         if (!carts) {
             return res.status(404).send({
                 status: 404,
@@ -77,7 +77,8 @@ export const getCartbyId = async (req, res) => {
             price: product.producto.price * product.quantity,
 
         }));
-        res.render('cartDetails', { products: productData })
+        res.status(200).send({ body: carts })
+
     } catch (err) {
         console.log(err)
         res.status(500).send({
@@ -86,10 +87,12 @@ export const getCartbyId = async (req, res) => {
         })
     }
 }
-
+//borra todo el carrito
 export const deleteCart = async (req, res) => {
     try {
-        const carts = await CartService.deleteCart(req.params.cid)
+        // const carts = await cartService.deleteCart(req.params.cid)
+        const carts = await cartService.deleteCart(req.params.pid)
+
         if (!carts) {
             return res.status(404).send({
                 status: 404,
@@ -116,59 +119,37 @@ export const deleteProductFromCart = async (req, res) => {
 
         const cartId = req.params.cid;
         const productId = req.params.pid;
-        const updatedCart = await CartService.deleteProductFromCart(cartId, productId)
+        const updatedCart = await cartService.deleteProductFromCart(cartId, productId)
 
         if (updatedCart) {
-            console.log('Product deleted from cart', updatedCart);
-            res.status(200).json({ message:  SUCCESS.PRODUCT_DELETED_FROM_CART, cart: updatedCart });
+            
+            res.status(200).json({ message: SUCCESS.PRODUCT_DELETED_FROM_CART, cart: updatedCart });
         }
 
         else {
-            // console.log('Cart not found');
             res.status(404).json({ message: ERROR.CART_NOT_FOUND });
         }
     } catch (error) {
-        // Handle error
         console.error('Error deleting product from cart:', error);
-        res.status(500).json({ message: ERROR.SERVER_ERROR});
+        res.status(500).json({ message: ERROR.SERVER_ERROR });
     }
 };
 
 export const addProductToCart = async (req, res) => {
 
-    const { cid, pid } = req.params;
-    const { quantity } = req.body;
-
     try {
-        const cart = await CartService.addProductToCart(cid, pid, quantity)
+        const { quantity } = req.body;
 
-        if (!cart) {
-            const newCart = {
-                producto: pid,
-                quantity: quantity || 1
-            };
-            const savedCart = await CartService.addProductToCartsavedCart(cid, newCart)
+        const { pid } = req.params;
 
-            const productData = savedCart.products.map(product => ({
-                title: product.producto.title,
-                description: product.producto.description,
-                quantity: product.quantity,
-                price: product.producto.price * product.quantity,
+        const user = await userService.getUser(req.session.user.email);
+        const cid = user.cart._id.toString();
+        const cart = await cartService.addProduct(pid, quantity, cid)
+        res.status(200).send({
+            body: cart,
+            message: SUCCESS.CART_UPDATED
+        })
 
-            }));
-            res.render('cartDetails', { products: productData });
-
-        } else {
-            // res.json(cart);
-            const productData = cart.products.map(product => ({
-                title: product.producto.title,
-                description: product.producto.description,
-                quantity: product.quantity,
-                price: product.producto.price * product.quantity,
-
-            }));
-            res.render('cartDetails', { products: productData });
-        }
     } catch (err) {
         console.log(err)
         res.status(500).send({
@@ -183,7 +164,7 @@ export const updateProduct = async (req, res) => {
         const { products } = req.body;
         const cartId = req.params.cid;
 
-        const updatedCart = await CartService.updateProduct(products, cartId)
+        const updatedCart = await cartService.updateProduct(products, cartId)
 
         if (updatedCart) {
             res.status(200).json({
@@ -201,7 +182,7 @@ export const updateProduct = async (req, res) => {
 
 
     } catch (error) {
-        
+
         res.status(500).json({
             status: 'error',
             message: ERROR.SERVER_ERROR,
@@ -219,50 +200,56 @@ export const purchaseCart = async (req, res) => {
 
         const processedProducts = [];
         const unprocessedProductIds = [];
-        // Verificar el stock y actualizar la base de datos
         for (const cartProduct of cart.products) {
-
             const productId = cartProduct.producto;
             const requestedQuantity = cartProduct.quantity;
-
             const product = await productService.getProductId(productId);
-
             if (product.stock >= requestedQuantity && product.status !== false) {
                 // Suficiente stock, restar del stock y continuar
                 product.stock -= requestedQuantity;
                 if (product.stock === 0) {
                     product.status = false;
                 }
-                const product = await productService.getProductByID(productId);
-                const productUpdated = await updateProduct.getProductId(product);// Llenar el array con la información del producto procesado
+
+                const productUpdated = await productService.updateProduct(product, req.session.user.email, req.session.user.role);
                 processedProducts.push({
-                    //   productId: product._id,
                     product: product.title,
                     quantity: requestedQuantity,
-                    //   unitPrice: product.price,
+                    unitPrice: product.price,
                 });
 
-                // Quitar el producto del array 'products' en el carrito
                 await cartService.deleteProduct(cartId, productId)
 
             } else {
-                // No hay suficiente stock, agregar el ID del producto al array de no procesados
                 unprocessedProductIds.push(`${ERROR.STOCK_LIMIT} ${cartProduct._doc.title}`);
             }
         }
 
         if (processedProducts.length > 0) {
-            // Si hay productos procesados, generar el ticket
+
             const ticket = {
                 code: generateUniqueCode(),
-                purchase_datetime: new Date(),
+                createdAt: new Date(),
                 amount: processedProducts.reduce((total, product) => total + product.quantity * product.unitPrice, 0),
                 purchaser: cart.purchaser,
-                processedProducts,
+                products: processedProducts,
             };
 
+            const ticketCreart = await TicketService.createTicket(ticket)
+            if (ticketCreart) {
+                const token = generateMailToken(req.body.email)
+                const htmlticket = generateTicketHTML(ticket)
+                const mailer = new MailingService()
+                const sendMailer = await mailer.sendMailUser({
+            
+                    from: config.MAIL_USER,
+                    to: req.session.user.email,
+                    subject: 'Restaurar Contraseña',
+                    html:htmlticket,
+            
+                })}
             if (unprocessedProductIds.length > 0) {
-                res.status(200).json({ message:  SUCCESS.PURCHASE_SUCCESSFUL, ticket, unprocessedProductIds });
+                res.status(200).json({ message: SUCCESS.PURCHASE_SUCCESSFUL, ticket, unprocessedProductIds });
             } else {
                 res.status(200).json({ message: SUCCESS.PURCHASE_SUCCESSFUL, ticket })
             }

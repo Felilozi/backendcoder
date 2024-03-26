@@ -3,12 +3,13 @@ import { Users } from "../Models/usersModel.js";
 
 export class UsersDAO {
     async getUsers() {
-        const User = await Users.find().lean();
-        return User;
+        const users = await Users.find().select('email first_name role').lean();
+
+        return users;
     }
 
     async getUsersByEmail(id) {
-        const User = await Users.findOne({ email: id }).lean();
+        const User = await Users.findOne({ email: id }).populate('cart');
         return User;
     }
 
@@ -28,13 +29,30 @@ export class UsersDAO {
         const user = await Users.findOne({ _id: id }).lean();
         return user;
     }
+    async deleteUsers(time) {
+        try {
+            const cutoffDate = new Date(Date.now() - time);
+            const result = await Users.deleteMany({ last_connection: { $lt: cutoffDate } });
 
+            // console.log(`${result.deletedCount} users deleted.`);
+            return result.deletedCount;
+        } catch (error) {
+            console.error('Error occurred while deleting inactive users:', error);
+            throw error;
+        }
+    }
+
+    async deleteUser(email) {
+        try {
+            await Users.deleteOne({ email });
+            return 'Success';
+        } catch (error) {
+            console.error('Error occurred while deleting inactive users:', error);
+            throw error;
+        }
+    }
     async updateRole(id, role) {
 
-        const actualRole = await Users.findOne({ email: id, role: 'USER' }).lean();
-        if (actualRole) {
-            throw new Error(ERROR.ADMIN_ACTION_REQUIRED);
-        }
         const updatedUser = await Users.updateOne({ email: id }, {
             $set: { role: role }
         });

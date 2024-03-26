@@ -51,9 +51,10 @@ export const checkUser = async (email, password) => {
 
 }
 export const createHash = password => bcrypt.hashSync(password, bcrypt.genSaltSync(10)) // register
-export const isValidPassword = (user, password) => bcrypt.compareSync(password, user) //  login
 
-//Lo nuevo
+
+export const isValidPassword = (user, password) => bcrypt.compareSync(password, user.password) //  login 
+
 export function generateUniqueCode(prefix = 'ORD') {
     const randomNumber = Math.floor(Math.random() * 10000); // Número aleatorio entre 0 y 9999
     const timestamp = new Date().getTime(); // Marca de tiempo en milisegundos
@@ -62,4 +63,19 @@ export function generateUniqueCode(prefix = 'ORD') {
     const code = `${prefix}-${randomNumber}-${timestamp}`;
 
     return code;
+}
+
+export function  generateTicketHTML(ticket) {
+    return `
+    
+        Código: ${ticket.code}
+        Creado en: ${ticket.createdAt.toLocaleString()}
+        Monto: ${ticket.amount.toFixed(2)}
+        Comprador:${ticket.purchaser}
+        Productos:
+        
+        ${ticket.products.map(product => `<li>${product.name} x ${product.quantity}</li>`).join('')}
+        <
+    
+    `;
 }

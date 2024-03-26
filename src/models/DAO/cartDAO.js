@@ -2,18 +2,21 @@ import { Cart } from '../Models/cartModel.js';
 
 export class CartDAO {
     async getCarts() {
-        const Cart = await Cart.find().select(['-__v']).populate('products.producto').lean();
-        return Cart;
+        const  carts = await Cart.find().select(['-__v']).populate('products.producto').lean();
+        return  carts;
     }
 
     async getCartsById(id) {
-        const Cart = await Cart.findOne({ _id: id }).populate('products.producto').lean();
-        return Cart;
+        const cartId = await Cart.findOne({ _id: id }).populate('products.producto').lean();
+        return cartId;
     }
-
+    async getCartsByEmail(email) {
+        const cartEmail = await Cart.findOne({ purchaser: email }).populate('products.producto').lean();
+        return cartEmail;
+    }
     async deleteCart(id) {
-        const Cart = await Cart.deleteOne({ _id: id }).populate('products.producto');
-        return Cart;
+        const deletecart = await Cart.deleteOne({ _id: id }).populate('products.producto');
+        return deletecart;
     }
 
     async deleteProduct(cartId, productId) {

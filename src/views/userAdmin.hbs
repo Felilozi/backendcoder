@@ -1,0 +1,29 @@
+<div>
+    <h1>User Information</h1>
+    <form action="/api/views/user" method="post">
+        <label for="email">Enter user email:</label>
+        <input type="text" id="email" name="email">
+        <button type="submit">Go</button>
+    </form>
+    {{#if user}}
+        <p>Email: {{user.email}}</p>
+        <p>First Name: {{user.first_name}}</p>
+        <p>Role: {{user.role}}</p>
+        <form action="/api/views/user/update-role" method="post">
+            <input type="hidden" name="email" value="{{user.email}}">
+            <label for="role">New Role:</label>
+            <select id="role" name="role">
+                <option value="admin">Admin</option>
+                <option value="user">User</option>
+                <option value="premium">Premium</option>
+            </select>
+            <button type="submit">Change Role</button>
+        </form>
+        <form action="/api/views/delete-user" method="post">
+            <input type="hidden" name="email" value="{{user.email}}">
+            <button type="submit">Delete User</button>
+        </form>
+    {{/if}}
+
+    
+</div>

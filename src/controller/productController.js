@@ -1,7 +1,9 @@
 'use strict'
-import { ERROR, SUCCESS } from '../dictionaryError.js';
+import { ERROR, SUCCESS } from '../commons/dictionaryError.js'
 import productService from '../servicios/productoServicios.js';
-import UserService from '../servicios/userServicios.js';
+import userService from '../servicios/usersService.js';
+import  {generateMailToken} from '../utils/helpers.js';
+import MailingService from '../servicios/mailing.js';
 
 
 export const getProducts = async (req, res) => {
@@ -46,22 +48,27 @@ export const getProducts = async (req, res) => {
         }
     };
     const { email } = req.session.user
-    // const userData = await query.findOne();
-    const userData = await UserService.getUser(email)
+    const userData = await userService.getUser(email)
 
 
-    console.log(userData)
+
     let admin;
     if (userData.role === 'ADMIN') {
         admin = true
     } else {
         admin = false
     }
-    res.render('allproductos', {
+    `${nextLink}`
+    const cart = userData.cart._id;
+    
+    
+
+    res.render('allProductos', {
         response,
         products: result.docs,
         user: userData,
-        admin
+        admin,
+        cart
     });
 
 
@@ -77,7 +84,8 @@ export const getProducts = async (req, res) => {
 
 export const saveProduct = async (req, res) => {
     try {
-        const productSave = await productService.saveProduct(req.body)
+        const productSave = await productService.saveProduct(req.body,req.session.user.email,req.session.user.role)
+
         if (!productSave) {
             return res.status(500).send({
                 status: 500,
@@ -99,7 +107,7 @@ export const saveProduct = async (req, res) => {
 }
 export const getProductByID = async (req, res) => {
     try {
-        const products = await productService.getProductByID(req.params.pid)
+        const products = await productService.getProductId(req.params.pid)
 
         if (!products) {
             return res.status(404).send({
@@ -107,9 +115,9 @@ export const getProductByID = async (req, res) => {
                 message: ERROR.PRODUCT_NOT_FOUND,
             })
         }
-
-        res.render('productosDetalles', products)
-
+        res.status(200).send({
+            body: products
+        })
     } catch (err) {
         console.log(err)
         res.status(500).send({
@@ -121,15 +129,30 @@ export const getProductByID = async (req, res) => {
 
 export const deleteProduct = async (req, res) => {
     try {
+        const productToDelete = await productService.deleteProduct.getProductByID(req.params.pid)
+        if (productToDelete) {
         const products = await productService.deleteProduct(req.params.pid,req.session.user.email)
-
+        }
         if (!products) {
             return res.status(404).send({
                 status: 404,
                 message: ERROR.PRODUCT_NOT_DELETED,
             })
         }
+        if (productToDelete.ownerRole === 'PREMIUM'&& productToDelete.owner){
+            const token = generateMailToken(productToDelete.owner)
+                const htmlticket = `Se a producto  ${productToDelete.title}`
+                const mailer = new MailingService()
+                const sendMailer = await mailer.sendMailUser({
+            
+                    from: config.MAIL_USER,
+                    to: productToDelete.owner,
+                    subject: 'Product Eliminado',
+                    html:htmlticket,
+            
+                })
 
+        }
         return res.status(200).send({
             status: 'success',
             message: SUCCESS.PRODUCT_DELETED,
@@ -147,7 +170,7 @@ export const deleteProduct = async (req, res) => {
 export const modifyProduct = async (req, res) => {
     try {
         const filter = { _id: req.params.pid }
-        const products = await productService.modifyProduct(req.body,req.session.user.email)
+        const products = await productService.updateProduct(req.body, req.session.user.email)
         if (!products) {
             return res.status(404).send({
                 status: 404,

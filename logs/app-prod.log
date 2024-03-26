@@ -1,0 +1,10 @@
+error: Error: Failed to lookup view "allProducts" in views directory "C:\Users\Lozinski\OneDrive\Escritorio\Backend\src\views"
+    at Function.render (C:\Users\Lozinski\OneDrive\Escritorio\Backend\node_modules\express\lib\application.js:597:17)
+    at ServerResponse.render (C:\Users\Lozinski\OneDrive\Escritorio\Backend\node_modules\express\lib\response.js:1039:7)
+    at getProducts (file:///C:/Users/Lozinski/OneDrive/Escritorio/Backend/src/controller/productController.js:62:9)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {"timestamp":"2024-03-25T22:58:48.455Z"}
+error: Error: Failed to lookup view "cartDetail" in views directory "C:\Users\Lozinski\OneDrive\Escritorio\Backend\src\views"
+    at Function.render (C:\Users\Lozinski\OneDrive\Escritorio\Backend\node_modules\express\lib\application.js:597:17)
+    at ServerResponse.render (C:\Users\Lozinski\OneDrive\Escritorio\Backend\node_modules\express\lib\response.js:1039:7)
+    at displayCart (file:///C:/Users/Lozinski/OneDrive/Escritorio/Backend/src/controller/userAdm.js:59:9)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {"timestamp":"2024-03-25T22:59:57.751Z"}

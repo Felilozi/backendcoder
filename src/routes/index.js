@@ -1,11 +1,12 @@
 'use strict'
 
 import { Router } from 'express'
-import { join } from 'node:path'
+import {dirname, join } from 'node:path'
 import { readdirSync, existsSync } from 'node:fs'
 import { removeExtensionFilename } from '../utils/helpers.js'
 
 const router = Router()
+const PATH_ROUTES = dirname(`${import.meta.url}`).split('file://')[1]
 const path = join(process.cwd(), '/src/routes')
 
 if (existsSync(path)) {
@@ -18,7 +19,7 @@ if (existsSync(path)) {
         }
     })
 } else {
-    console.error(`Directory does not exist: ${path}`)
+    console.error(`Directory does not exist: ${path}`);
 }
 
-export { router }
+export { router };

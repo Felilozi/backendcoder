@@ -1,4 +1,4 @@
-import { ERROR } from "../dictionaryError.js"
+import { ERROR ,SUCCESS} from '../commons/dictionaryError.js';
 import { verifyToken } from "../utils/helpers.js";
 
 

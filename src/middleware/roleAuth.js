@@ -1,6 +1,6 @@
 import passport from "passport";
 import { generateToken, checkUser, isValidPassword } from "../utils/helpers.js";
-import { ERROR} from "../dictionaryError.js"
+import { ERROR} from "../commons/dictionaryError.js";
 import { RoleManager } from "../controller/roleController.js";
 const roleAuth = (strategy, adminRequired,action) => {
     return (req, res, next) => {

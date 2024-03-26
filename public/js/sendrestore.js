@@ -5,7 +5,7 @@ form.addEventListener('submit', e => {
     const data = new FormData(form);
     const obj = {};
     data.forEach((value, key) => obj[key] = value);
-    fetch('/api/users/login', {
+    fetch('/api/users/sendrestore', {
         method: 'POST',
         body: JSON.stringify(obj),
         headers: {
@@ -13,7 +13,7 @@ form.addEventListener('submit', e => {
         }
     }).then(result => {
         if (result.status === 200) {
-            window.location.href = '/api/product';;
+            window.location.href = '/api/views/login';;
         }
     })
 })

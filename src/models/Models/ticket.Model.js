@@ -15,7 +15,7 @@ const ticketSchema = new Schema({
     },
     purchaser: {
         type: String,
-        required: false
+        required: true
     },               // Correo del usuario asociado al carrito
 
     products: {
