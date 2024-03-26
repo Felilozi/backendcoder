@@ -25,7 +25,6 @@ router.get('/crearProducto', (req, res) => {
     res.render('realTimeProducts')
 })
 
-realTimeProducts.ha
 router.get('/cart', displayCart)
 
 router.get('/restore/verify', verifyTokenMiddleware, (req, res) => {
